@@ -8,18 +8,16 @@
         <div class="row mb-4">
             <div class="col-lg-8">
                 <div class="form-group">
-                    <label for="exampleInputEmail">Nama Kandidat</label>
-                    <input type="email" class="form-control form-control-user"
-                        id="exampleInputEmail" aria-describedby="emailHelp"
-                        placeholder="@ Rahmat Hidayat">
+                    <label for="nama">Nama Kandidat</label>
+                    <input type="text" class="form-control form-control-user"
+                        id="nama" aria-describedby="nama" value=" @Rahmat Hidayat" readonly>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="form-group">
-                    <label for="exampleInputEmail">Posisi Kandidat</label>
-                    <input type="email" class="form-control form-control-user"
-                        id="exampleInputEmail" aria-describedby="emailHelp"
-                        placeholder="Web Programmer">
+                    <label for="posisi">Posisi Kandidat</label>
+                    <input type="text" class="form-control form-control-user"
+                        id="posisi" aria-describedby="posisi" value="</> Web Programmer" readonly>
                 </div>
             </div>
         </div>
