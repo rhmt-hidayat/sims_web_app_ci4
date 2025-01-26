@@ -31,22 +31,22 @@
 
     <div class="row m-sm-1">
         <div class="col-lg-12">
-            <form action="<?php echo base_url() . 'produk/insert'; ?>" method="post" enctype="multipart/form-data">
+            <form action="" method="post" enctype="multipart/form-data">
                 <div class="row align-items-center mb-3">
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="form-group mb-3">
                             <label for="kategori" class="form-label">Kategori</label>
-                            <select id="kategori" class="form-select">
+                            <select id="kategori" name="kategori" class="form-select">
                                 <option value="">Pilih Kategori</option>
-                                <option value="olahraga">Alat Olahraga</option>
-                                <option value="musik">Alat Musik</option>
+                                <option value="Alat Olahraga">Alat Olahraga</option>
+                                <option value="Alat Musik">Alat Musik</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-lg-8 col-md-8 col-sm-12">
                         <div class="form-group">
-                            <label for="nama">Nama Barang</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Nama Barang" required>
+                            <label for="nama_barang">Nama Barang</label>
+                            <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Masukan Nama Barang" required>
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-12">
@@ -63,11 +63,17 @@
                     </div>
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <div class="form-group">
-                            <label for="stock">Stock Barang</label>
-                            <input type="number" class="form-control" id="stock" name="stock" placeholder="Masukan Stock Barang" required>
+                            <label for="stock_barang">Stock Barang</label>
+                            <input type="number" class="form-control" id="stok_barang" name="stock_barang" placeholder="Masukan Stock Barang" required>
                         </div>
                     </div>
-                    <div class="col-lg-12 col-md-8 col-sm-12">
+                    <div class="col-lg-4 col-md-8 col-sm-12">
+                        <div class="form-group">
+                            <label for="image">Upload Image</label>
+                            <input type="text" class="form-control" id="image" name="image" placeholder="contoh image" required>
+                        </div>
+                    </div>
+                    <!-- <div class="col-lg-12 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="stock">Upload Image</label>
                             <div id="dropzone" class="dropzone">
@@ -77,7 +83,7 @@
                                 <img id="preview" src="" alt="Preview Gambar" class="d-none">
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="d-flex justify-content-end">
                     <a href="<?php echo base_url() . '/produk'; ?>" class="btn btn-outline-primary px-5 m-sm-2">Batalkan</a>

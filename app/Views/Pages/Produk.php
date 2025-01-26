@@ -29,7 +29,7 @@
         </div>
         <div class="col-lg-6 mb-4 text-right">
             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><img src="<?php echo base_url('icon/MicrosoftExcelLogo.png'); ?>" class="img-fluid" alt="logo"> Export Excel</a>
-            <a href="<?php echo base_url() . 'add'; ?>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><img src="<?php echo base_url('icon/PlusCircle.png'); ?>" class="img-fluid" alt="logo"> Tambah Produk</a>
+            <a href="<?php echo base_url() . 'produk/add'; ?>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><img src="<?php echo base_url('icon/PlusCircle.png'); ?>" class="img-fluid" alt="logo"> Tambah Produk</a>
         </div>
     </div>
 
@@ -48,19 +48,23 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td width="1%"><img src="<?php echo base_url('icon/image 2.png'); ?>" class="img-fluid" alt="logo"></td>
-                    <td>Raket Badminton</td>
-                    <td>ALat Olahraga</td>
-                    <td>100.000</td>
-                    <td>130.000</td>
-                    <td>35</td>
-                    <td>
-                        <a href="#"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
-                        <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" class="img-fluid" alt="logo"></a>
-                    </td>
-                </tr>
+                <?php $no = 1;
+                foreach ($produk as $rows) : ?>
+                    <tr>
+                        <td><?= $no++; ?></td>
+                        <td width="1%"><img src="<?php echo base_url('icon/') . $rows['image']; ?>" class="img-fluid" alt="logo"></td>
+                        <td><?= $rows['nama_barang'] ?></td>
+                        <td><?= $rows['kategori'] ?></td>
+                        <td><?= $rows['harga_beli'] ?></td>
+                        <td><?= $rows['harga_jual'] ?></td>
+                        <td><?= $rows['stock_barang'] ?></td>
+                        <td>
+                            <!-- <a href="/produk/<?= $rows['nama_barang'] ?>"><i class="fas fa-eye"></i></a> -->
+                            <a href="#"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
+                            <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" class="img-fluid" alt="logo"></a>
+                        </td>
+                    </tr>
+                <?php endforeach ?>
             </tbody>
         </table>
     </div>

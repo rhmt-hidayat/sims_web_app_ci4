@@ -16,7 +16,9 @@ class Home extends BaseController
 
     public function auth()
     {
-        echo "hai";
+        $email = $this->input->post('email');
+        $password = md5($this->input->post('password'));
+        dd($email, $password);
     }
 
     public function profil()
