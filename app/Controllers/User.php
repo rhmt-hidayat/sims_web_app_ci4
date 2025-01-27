@@ -82,6 +82,10 @@ class User extends BaseController
 
     public function profil()
     {
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/');
+        }
+        
         $data = [
             'title' => 'Profil'
         ];

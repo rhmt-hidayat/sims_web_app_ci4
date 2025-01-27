@@ -55,13 +55,57 @@ class Produk extends BaseController
         ];
         // lakukan validasi
         $validation =  \Config\Services::validation();
-        $validation->setRules(['nama_barang' => 'required', 'kategori' => 'required', 'harga_beli' => 'required|numeric', 'harga_jual' => 'required|numeric', 'stock_barang' => 'required|integer', 'image' => 'permit_empty|string']);
+        // Aturan Validasi
+        $validation->setRules([
+            'nama_barang' => [
+                'rules' => 'required|is_unique[produk.nama_barang]',
+                'errors' => [
+                    'required' => 'Nama barang harus diisi.',
+                    'is_unique' => 'Nama barang sudah ada, gunakan nama lain.',
+                ],
+            ],
+            'kategori' => [
+                'rules' => 'required|alpha',
+                'errors' => [
+                    'required' => 'kategori harus diisi.',
+                    'alpha' => 'Kategori harus berupa huruf.',
+                ],
+            ],
+            'harga_beli' => [
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'harga beli barang harus diisi.',
+                    'integer' => 'harga beli barang harus berupa angka.',
+                ],
+            ],
+            'harga_jual' => [
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'harga jual barang harus diisi.',
+                    'integer' => 'harga jual barang harus berupa angka.',
+                ],
+            ],
+            'stock_barang' => [
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'stock barang harus diisi.',
+                    'integer' => 'stock barang harus berupa angka.',
+                ],
+            ],
+            'image' => [
+                'rules' => 'uploaded[image]|mime_in[image,image/jpg,image/jpeg,image/png]|max_size[image,100]',
+                'errors' => [
+                    'uploaded' => 'Gambar produk wajib diunggah.',
+                    'mime_in' => 'File yang diunggah harus berupa gambar jpg dan png.',
+                    'max_size' => 'Ukuran gambar maksimal adalah 100KB.',
+                ],
+            ],
+        ]);
         $isDataValid = $validation->withRequest($this->request)->run();
-
         // jika data valid, simpan ke database
         if ($isDataValid) {
             $produk = new ProductModel();
-            $produk->insert([
+            $produk->save([
                 "nama_barang" => $this->request->getPost('nama_barang'),
                 "kategori" => $this->request->getPost('kategori'),
                 "harga_beli" => $this->request->getPost('harga_beli'),

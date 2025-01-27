@@ -32,6 +32,7 @@
     <div class="row m-sm-1">
         <div class="col-lg-12">
             <form action="" method="post" enctype="multipart/form-data">
+                <?= csrf_field(); ?>
                 <div class="row align-items-center mb-3">
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="form-group mb-3">
@@ -42,36 +43,42 @@
                                     <option value="<?= $item['nama_kategori']; ?>"><?= $item['nama_kategori']; ?></option>
                                 <?php endforeach; ?>
                             </select>
+                            
                         </div>
                     </div>
                     <div class="col-lg-8 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="nama_barang">Nama Barang</label>
                             <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Masukan Nama Barang" required>
+                            
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-4 col-sm-12">
                         <div class="form-group">
                             <label for="harga_beli">Harga Beli</label>
                             <input type="number" class="form-control" id="harga_beli" name="harga_beli" placeholder="Masukan Harga Beli" required>
+                            
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="harga_jual">Harga Jual</label>
                             <input type="number" class="form-control" id="harga_jual" name="harga_jual" placeholder="Masukan Harga Jual" required>
+                            
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="stock_barang">Stock Barang</label>
                             <input type="number" class="form-control" id="stok_barang" name="stock_barang" placeholder="Masukan Stock Barang" required>
+                            
                         </div>
                     </div>
                     <div class="col-lg-4 col-md-8 col-sm-12">
                         <div class="form-group">
                             <label for="image">Upload Image</label>
                             <input type="text" class="form-control" id="image" name="image" placeholder="contoh image" required>
+                            
                         </div>
                     </div>
                     <!-- <div class="col-lg-12 col-md-8 col-sm-12">

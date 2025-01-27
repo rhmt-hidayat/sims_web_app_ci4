@@ -7,7 +7,14 @@
         <div class="col-lg-6 mb-4 text-left">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Detail Produk</h6>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h6 class="m-0 font-weight-bold text-primary">Detail Produk</h6>
+                        </div>
+                        <div class="col-lg-6 text-right">
+                            <a href="<?= base_url('produk'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-left"></i> Kembali</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -22,7 +29,7 @@
                             <div class="form-group">
                                 <label for="harga_beli">Harga Beli</label>
                                 <input type="text" class="form-control" id="harga_beli" name="harga_beli" placeholder="Masukan Harga Beli" value="<?= $produk['harga_beli'] ?>" readonly>
-                            </div>  
+                            </div>
                             <div class="form-group">
                                 <label for="harga_jual">Harga Jual</label>
                                 <input type="text" class="form-control" id="harga_jual" name="harga_jual" placeholder="Masukan Harga Jual" value="<?= $produk['harga_jual'] ?>" readonly>
