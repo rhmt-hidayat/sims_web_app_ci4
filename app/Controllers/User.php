@@ -18,24 +18,37 @@ class User extends BaseController
 
     public function auth()
     {
+        $session = session();
         $UserModel = new UserModel();
+        date_default_timezone_set('Asia/Jakarta');
 
         $email = $this->request->getPost('email');
         $password = $this->request->getPost('password');
 
-        $cek = $UserModel->get_data($email, $password);
+        // Cari user berdasarkan email
+        $user = $UserModel->where('email', $email)->first();
 
-        if ($cek == null) {
-            session()->setFlashdata('error', 'username atau password salah.');
-            return redirect()->to(base_url('/'));
-        } else {
-            if (($cek['email'] == $email) && ($cek['password'] == $password)) {
-                session()->set('email', $cek['email']);
-                session()->set('nama', $cek['nama']);
-                session()->set('posisi', $cek['posisi']);
-                session()->set('id', $cek['id']);
-                return redirect()->to(base_url('produk'));
+        if ($user) {
+            // Verifikasi password menggunakan bcrypt
+            if (password_verify($password, $user['password'])) {
+                // Set session jika login berhasil
+                $session->set([
+                    'id' => $user['id'],
+                    'email' => $user['email'],
+                    'nama' => $user['nama'],
+                    'posisi' => $user['posisi'],
+                    'isLoggedIn' => true,
+                ]);
+
+                // $UserModel->update($email, ["last_login" => date('Y-m-d H:i:s')]);
+                return redirect()->to('produk');
+            } else {
+                $session->setFlashdata('error', 'Password salah.');
+                return redirect()->back();
             }
+        } else {
+            $session->setFlashdata('error', 'Email tidak ditemukan.');
+            return redirect()->back();
         }
     }
 
@@ -56,14 +69,14 @@ class User extends BaseController
 
         $data = [
             'nama' => $this->request->getPost('nama'),
-            'password' => $this->request->getPost('password'),
             'email'    => $this->request->getPost('email'),
+            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT), // Enkripsi password dengan bcrypt
+            'password_decrypt' => $this->request->getPost('password'),
             'posisi'    => $this->request->getPost('posisi'),
             'create_date' => date('Y-m-d H:i:s'),
         ];
 
         $userModel->save($data);
-
         return redirect()->to('/')->with('success', 'Akun berhasil dibuat.');
     }
 
@@ -80,7 +93,8 @@ class User extends BaseController
 
     public function logout()
     {
-        session()->destroy();
+        $session = session();
+        $session->destroy();
         return redirect()->to(base_url('/'));
     }
 }

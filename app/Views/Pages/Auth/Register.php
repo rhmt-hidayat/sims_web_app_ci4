@@ -47,16 +47,16 @@
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-user"
                                     id="nama" name="nama" aria-describedby="nama"
-                                    placeholder="Masukan Nama Anda">
+                                    placeholder="Masukan Nama Anda" required>
                             </div>
                             <div class="form-group">
                                 <input type="email" class="form-control form-control-user"
                                     id="email" name="email" aria-describedby="email"
-                                    placeholder="Masukan Email Anda">
+                                    placeholder="Masukan Email Anda" required>
                             </div>
                             <div class="form-group password-wrapper">
                                 <input type="password" class="form-control form-control-user"
-                                    id="password" name="password" placeholder="Password">
+                                    id="password" name="password" placeholder="Password" required>
                                 <span class="toggle-password" onclick="togglePasswordVisibility()">
                                     👁️ <!-- Icon mata -->
                                 </span>
@@ -64,7 +64,7 @@
                             <div class="form-group">
                                 <input type="text" class="form-control form-control-user"
                                     id="posisi" name="posisi" aria-describedby="posisi"
-                                    placeholder="Masukan Posisi Jabatan">
+                                    placeholder="Masukan Posisi Jabatan" required>
                             </div>
                             <button type="submit" class="btn btn-warning btn-user btn-block">
                                 Daftar

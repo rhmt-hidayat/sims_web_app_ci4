@@ -1,3 +1,38 @@
+<style>
+    .password-wrapper {
+        position: relative;
+        /* display: inline-block; */
+        display: flex;
+        flex-direction: column;
+        max-width: 650px;
+        /* Lebar maksimal untuk input password */
+        margin-bottom: 20px;
+    }
+
+    .password-wrapper input {
+        /* padding-right: 40px; */
+        /* Tambahkan ruang untuk ikon mata */
+        width: 100%;
+        padding: 10px;
+        padding-right: 50px;
+        /* Tambahkan ruang untuk ikon mata */
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .password-wrapper .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+        color: #555;
+    }
+</style>
+
 <div class="card-body p-0">
     <div class="container-fluid h-100">
         <div class="row h-100 d-flex justify-content-center align-items-center">
@@ -9,14 +44,18 @@
                         <h1 class="h4 text-gray-900 mb-4"><strong>Masuk atau buat akun<br>untuk memulai</strong> </h1>
                     </div>
                     <form class="user" action="<?php echo base_url() . 'auth'; ?>" method="post">
+                        <?= csrf_field() ?>
                         <div class="form-group">
                             <input type="email" class="form-control form-control-user"
                                 id="email" name="email" aria-describedby="email"
                                 placeholder="@ masukan email anda" required>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group password-wrapper">
                             <input type="password" class="form-control form-control-user"
-                                id="password" name="password" placeholder="masukan password anda" required>
+                                id="password" name="password" placeholder="Password">
+                            <span class="toggle-password" onclick="togglePasswordVisibility()">
+                                👁️ <!-- Icon mata -->
+                            </span>
                         </div>
                         <button type="submit" class="btn btn-danger btn-user btn-block">
                             Login
@@ -47,6 +86,7 @@
 </div>
 
 <script>
+    //logo canvas icon warna merah
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
     const img = new Image();
@@ -69,4 +109,18 @@
 
         ctx.putImageData(imageData, 0, 0);
     };
+
+    //fungsi toggle password
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.querySelector('.toggle-password');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.textContent = '🙈'; // Ganti ikon menjadi "mata tertutup"
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.textContent = '👁️'; // Ganti ikon menjadi "mata terbuka"
+        }
+    }
 </script>

@@ -10,6 +10,11 @@ class Produk extends BaseController
 {
     public function index()
     {
+        // Cek apakah user sudah login
+        if (!session()->get('isLoggedIn')) {
+            return redirect()->to('/');
+        }
+
         $produkModel = new ProductModel();
         $data = [
             'title' => 'Daftar Produk',
