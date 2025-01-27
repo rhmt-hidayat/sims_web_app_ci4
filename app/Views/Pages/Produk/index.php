@@ -59,9 +59,9 @@
                         <td><?= $rows['harga_jual'] ?></td>
                         <td><?= $rows['stock_barang'] ?></td>
                         <td>
-                            <!-- <a href="/produk/<?= $rows['nama_barang'] ?>"><i class="fas fa-eye"></i></a> -->
-                            <a href="#"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
-                            <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" class="img-fluid" alt="logo"></a>
+                            <a href="/produk/<?= $rows['id'] ?>"><i class="fas fa-eye"></i></a>
+                            <a href="<?= base_url('produk/' . $rows['id'] . '/edit') ?>"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
+                            <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" data-href="<?= base_url('produk/' . $rows['id'] . '/delete') ?>" onclick="confirmToDelete(this)" class="img-fluid" alt="logo"></a>
                         </td>
                     </tr>
                 <?php endforeach ?>
@@ -75,7 +75,7 @@
 
 <footer class="sticky-footer bg-white">
     <div class="container my-auto">
-        <div class="copyright text-center my-auto">
+        <div class="copyright text-right my-auto">
             <span>Copyright &copy; 2025</span>
         </div>
     </div>
@@ -83,3 +83,25 @@
 </div>
 
 </div>
+
+<div id="confirm-dialog" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h2 class="h2">Apa Anda Yakin ?</h2>
+                <p>Data akan dihapus secara permanen</p>
+            </div>
+            <div class="modal-footer">
+                <a href="#" role="button" id="delete-button" class="btn btn-danger">Delete</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function confirmToDelete(el) {
+        $("#delete-button").attr("href", el.dataset.href);
+        $("#confirm-dialog").modal('show');
+    }
+</script>

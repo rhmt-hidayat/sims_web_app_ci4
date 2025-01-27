@@ -38,8 +38,9 @@
                             <label for="kategori" class="form-label">Kategori</label>
                             <select id="kategori" name="kategori" class="form-select">
                                 <option value="">Pilih Kategori</option>
-                                <option value="Alat Olahraga">Alat Olahraga</option>
-                                <option value="Alat Musik">Alat Musik</option>
+                                <?php foreach ($kategori as $item): ?>
+                                    <option value="<?= $item['nama_kategori']; ?>"><?= $item['nama_kategori']; ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                     </div>

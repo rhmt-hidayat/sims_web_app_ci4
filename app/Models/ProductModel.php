@@ -10,5 +10,5 @@ class ProductModel extends Model
     protected $primaryKey = 'id';
 
     protected $useAutoIncrement = true;
-    protected $allowedFields = ['nama_barang', 'kategori', 'harga_beli', 'harga_jual', 'stock_barang', 'image', 'create_date', 'last_date'];
+    protected $allowedFields = ['id', 'nama_barang', 'kategori', 'harga_beli', 'harga_jual', 'stock_barang', 'image', 'create_date', 'last_date'];
 }
