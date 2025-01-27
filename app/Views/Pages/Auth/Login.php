@@ -11,17 +11,32 @@
                     <form class="user" action="<?php echo base_url() . 'auth'; ?>" method="post">
                         <div class="form-group">
                             <input type="email" class="form-control form-control-user"
-                                id="email" aria-describedby="email"
+                                id="email" name="email" aria-describedby="email"
                                 placeholder="@ masukan email anda" required>
                         </div>
                         <div class="form-group">
                             <input type="password" class="form-control form-control-user"
-                                id="password" placeholder="masukan password anda" required>
+                                id="password" name="password" placeholder="masukan password anda" required>
                         </div>
                         <button type="submit" class="btn btn-danger btn-user btn-block">
                             Login
                         </button>
                     </form>
+                    <div class="text-center mt-3">
+                        <a class="small" href="<?php echo base_url() . 'register'; ?>">Create an Account!</a>
+                    </div>
+                    <!-- Flashdata Pesan -->
+                    <?php if (session()->getFlashdata('success')): ?>
+                        <div style="color: green; border: 1px solid green; padding: 10px;" class="alert alert-success mt-5">
+                            <?= session()->getFlashdata('success'); ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if (session()->getFlashdata('error')): ?>
+                        <div style="color: red; border: 1px solid red; padding: 10px;" class="alert alert-danger mt-5">
+                            <?= session()->getFlashdata('error'); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-lg-6 d-none d-lg-block bg-login-image">

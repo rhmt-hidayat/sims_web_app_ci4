@@ -17,7 +17,7 @@
                     <span>Profil</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url() . '/'; ?>">
+                <a class="nav-link" href="<?php echo base_url() . 'logout'; ?>">
                     <img src="<?php echo base_url('icon/SignOut.png'); ?>" class="img-fluid" alt="logo">
                     <span>Logout</span></a>
             </li>

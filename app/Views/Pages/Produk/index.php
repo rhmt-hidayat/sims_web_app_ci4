@@ -3,6 +3,19 @@
         <h1 class="h3 mb-0 text-gray-800"><?= $title; ?></h1>
     </div>
 
+    <!-- Flashdata Pesan -->
+    <?php if (session()->getFlashdata('success')): ?>
+        <div style="color: green; border: 1px solid green; padding: 10px;" class="alert alert-success">
+            <?= session()->getFlashdata('success'); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (session()->getFlashdata('error')): ?>
+        <div style="color: red; border: 1px solid red; padding: 10px;" class="alert alert-danger">
+            <?= session()->getFlashdata('error'); ?>
+        </div>
+    <?php endif; ?>
+
     <div class="row">
         <div class="col-lg-6 mb-4 text-left">
             <form

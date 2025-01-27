@@ -5,9 +5,12 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
-$routes->post('/auth', 'Home::auth');
-$routes->get('/profil', 'Home::profil');
+$routes->get('/', 'User::index');
+$routes->post('/auth', 'User::auth');
+$routes->get('/register', 'User::register');
+$routes->post('/authRegister', 'User::proses_register');
+$routes->get('/logout', 'User::logout');
+$routes->get('/profil', 'User::profil');
 //CRUD produk
 $routes->get('/produk', 'Produk::index');
 $routes->get('/produk/(:num)', 'Produk::detail/$1');

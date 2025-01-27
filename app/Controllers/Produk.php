@@ -65,6 +65,7 @@ class Produk extends BaseController
                 "image" => $this->request->getPost('image'),
                 "create_date" => date('Y-m-d H:i:s'),
             ]);
+            session()->setFlashdata('success', 'Produk berhasil disimpan.');
             return redirect()->to('produk')->with('success', 'Produk berhasil ditambahkan.');
         }
 
@@ -116,6 +117,7 @@ class Produk extends BaseController
                 "image" => $this->request->getPost('image'),
                 "last_date" => date('Y-m-d H:i:s'),
             ]);
+            session()->setFlashdata('success', 'Produk berhasil diperbarui.');
             return redirect()->to('produk')->with('success', 'Produk berhasil diperbarui.');
         }
 
@@ -129,6 +131,7 @@ class Produk extends BaseController
     {
         $produk = new ProductModel();
         $produk->delete($id);
+        session()->setFlashdata('error', 'Produk berhasil dihapus.');
         return redirect('produk');
     }
 }
