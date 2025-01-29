@@ -14,10 +14,11 @@ $routes->get('/logout', 'User::logout');
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/profil', 'User::profil');
-    $routes->get('/produk', 'Produk::index', ['filter' => 'auth']);
+    $routes->get('/produk', 'Produk::index');
     $routes->get('/produk/(:num)', 'Produk::detail/$1');
     $routes->add('/produk/add', 'Produk::create');
     $routes->add('/produk/(:segment)/edit', 'Produk::edit/$1');
     $routes->get('/produk/(:segment)/delete', 'Produk::delete/$1');
     $routes->get('/produk/export', 'Produk::export');
+    // $routes->get('/produk/export/(:any)', 'Produk::export/$1');
 });

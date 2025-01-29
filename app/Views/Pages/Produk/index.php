@@ -124,4 +124,18 @@
     function submitForm() {
         document.getElementById("filterForm").submit();
     }
+
+    //menangkap value dropdown kategori diteruskan ke controller export
+    // document.getElementById("exportExcel").addEventListener("click", function() {
+    //     event.preventDefault();
+    //     // Ambil nilai dropdown
+    //     let kategori = document.getElementById("kategori").value;
+    //     if (kategori === "") {
+    //         alert("Silakan pilih kategori terlebih dahulu!");
+    //         return;
+    //     }
+    //     // Encode kategori agar aman dalam URL
+    //     let encodedKategori = encodeURIComponent(kategori);
+    //     window.location.href = "<?= base_url('produk/export') ?>?kategori=" + encodedKategori;
+    // });
 </script>

@@ -175,7 +175,13 @@ class Produk extends BaseController
 
     public function export()
     {
-        $produk = $this->productModel->findAll();
+        // Ambil kategori dari query string (?kategori=Alat+Olahraga)
+        $kategori = $this->request->getGet('kategori');
+        if ($kategori) {
+            $produk = $this->productModel->where('kategori', $kategori)->findAll();
+        }else{
+            $produk = $this->productModel->findAll();
+        }
 
         $spreadsheet = new Spreadsheet();
         $activeWorksheet = $spreadsheet->getActiveSheet();
@@ -226,21 +232,9 @@ class Produk extends BaseController
             $activeWorksheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        $filename = 'Produk_' . date('Ymd') . '.xlsx';
-        //style header tanpa judul
-        // $activeWorksheet->getStyle('A3:F3')->getFont()->setBold(true);
-        // $activeWorksheet->getStyle('A3:F3')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
-        // $activeWorksheet->getStyle('A3:F3')->getFill()->getStartColor()->setARGB('FF4500');
-        // $activeWorksheet->getStyle('A3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-        // $styleArray = [
-        //     'borders' => [
-        //         'allBorders' => [
-        //             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-        //             'color' => ['argb' => 'FF000000'],
-        //         ],
-        //     ],
-        // ];
-        // $activeWorksheet->getStyle('A3:F' . ($column - 1))->applyFromArray($styleArray);
+        // Nama file berdasarkan kategori
+        $filename = $kategori ? "Laporan_Produk_$kategori" : "Laporan_Semua_Produk";
+        $filename .= "_" . date('Ymd') . ".xlsx";
 
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
