@@ -19,4 +19,5 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->add('/produk/add', 'Produk::create');
     $routes->add('/produk/(:segment)/edit', 'Produk::edit/$1');
     $routes->get('/produk/(:segment)/delete', 'Produk::delete/$1');
+    $routes->get('/produk/export', 'Produk::export');
 });

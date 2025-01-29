@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\ProductModel;
 use App\Models\KategoriModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Produk extends BaseController
 {
@@ -169,5 +171,82 @@ class Produk extends BaseController
         $produk->delete($id);
         session()->setFlashdata('error', 'Produk berhasil dihapus.');
         return redirect('produk');
+    }
+
+    public function export()
+    {
+        $produk = $this->productModel->findAll();
+
+        $spreadsheet = new Spreadsheet();
+        $activeWorksheet = $spreadsheet->getActiveSheet();
+
+        // Menambahkan Judul
+        $activeWorksheet->setCellValue('A1', 'DATA PRODUK');
+        $activeWorksheet->mergeCells('A1:F1'); // Menggabungkan cell untuk judul
+        $activeWorksheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
+        $activeWorksheet->getStyle('A1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        // Menambahkan Header
+        $activeWorksheet->setCellValue('A3', 'No');
+        $activeWorksheet->setCellValue('B3', 'Nama Produk');
+        $activeWorksheet->setCellValue('C3', 'Kategori Produk');
+        $activeWorksheet->setCellValue('D3', 'Harga Barang');
+        $activeWorksheet->setCellValue('E3', 'Harga Jual');
+        $activeWorksheet->setCellValue('F3', 'Stok');
+
+         // Style Header
+         $headerStyle = [
+            'font' => ['bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFF']],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF4500'] // Warna orange
+            ]
+        ];
+        $activeWorksheet->getStyle('A3:F3')->applyFromArray($headerStyle);
+
+        $column = 4;
+        foreach ($produk as $key => $value) {
+            $activeWorksheet->setCellValue('A' . $column, $key + 1);
+            $activeWorksheet->setCellValue('B' . $column, $value['nama_barang']);
+            $activeWorksheet->setCellValue('C' . $column, $value['kategori']);
+            $activeWorksheet->setCellValue('D' . $column, $value['harga_beli']);
+            $activeWorksheet->setCellValue('E' . $column, $value['harga_jual']);
+            $activeWorksheet->setCellValue('F' . $column, $value['stock_barang']);
+            
+            // Style border untuk data
+            $activeWorksheet->getStyle("A$column:F$column")->applyFromArray([
+                'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]]
+            ]);
+
+            $column++;
+        }
+        // Auto size column
+        foreach (range('A', 'F') as $col) {
+            $activeWorksheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        $filename = 'Produk_' . date('Ymd') . '.xlsx';
+        //style header tanpa judul
+        // $activeWorksheet->getStyle('A3:F3')->getFont()->setBold(true);
+        // $activeWorksheet->getStyle('A3:F3')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+        // $activeWorksheet->getStyle('A3:F3')->getFill()->getStartColor()->setARGB('FF4500');
+        // $activeWorksheet->getStyle('A3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        // $styleArray = [
+        //     'borders' => [
+        //         'allBorders' => [
+        //             'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+        //             'color' => ['argb' => 'FF000000'],
+        //         ],
+        //     ],
+        // ];
+        // $activeWorksheet->getStyle('A3:F' . ($column - 1))->applyFromArray($styleArray);
+
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        $writer->save('php://output');
+        exit;
     }
 }
