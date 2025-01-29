@@ -18,13 +18,13 @@
 
     <div class="row">
         <div class="col-lg-6 mb-4 text-left">
-            <form
+            <form action="" method="get"
                 class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                 <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Cari Barang"
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Cari Barang" name="keyword"
                         aria-label="Search" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
+                        <button class="btn btn-secondary" type="submit">
                             <i class="fas fa-search fa-sm"></i>
                         </button>
                     </div>
@@ -61,7 +61,7 @@
                 </tr>
             </thead>
             <tbody>
-                <?php $no = 1;
+                <?php $no = 1 + (5 * ($currentPage - 1)); //nomor urut di pagination produk
                 foreach ($produk as $rows) : ?>
                     <tr>
                         <td><?= $no++; ?></td>
@@ -80,6 +80,7 @@
                 <?php endforeach ?>
             </tbody>
         </table>
+        <?= $pager->links('produk', 'produk_pager') ?>
     </div>
 
 </div>

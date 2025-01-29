@@ -8,6 +8,14 @@ use CodeIgniter\Exceptions\PageNotFoundException;
 
 class Produk extends BaseController
 {
+    protected $productModel;
+    protected $kategoriModel;
+
+    public function __construct()
+    {
+        $this->productModel = new ProductModel();
+        $this->kategoriModel = new KategoriModel();
+    }
     public function index()
     {
         // Cek apakah user sudah login
@@ -15,16 +23,29 @@ class Produk extends BaseController
             return redirect()->to('/');
         }
 
-        $produkModel = new ProductModel();
+        //membuat nomor halaman pagination
+        $currentPage = $this->request->getVar('page_produk') ? $this->request->getVar('page_produk') : 1;
+        //cari barang
+        $keyword = $this->request->getVar('keyword');
+        if ($keyword) {
+            $produk = $this->productModel->search($keyword);
+        } else {
+            $produk = $this->productModel;
+        }
+
         $data = [
             'title' => 'Daftar Produk',
-            'produk' => $produkModel->findAll()
+            // 'produk' => $produkModel->findAll()
+            'produk' => $produk->paginate(5, 'produk'),
+            'pager' => $produk->pager,
+            'currentPage' => $currentPage
         ];
 
         echo view('layout/header', $data);
         echo view('layout/sidebar');
         echo view('pages/produk/index', $data);
         echo view('layout/footer');
+        return;
     }
 
     public function detail($id)
@@ -55,57 +76,12 @@ class Produk extends BaseController
         ];
         // lakukan validasi
         $validation =  \Config\Services::validation();
-        // Aturan Validasi
-        $validation->setRules([
-            'nama_barang' => [
-                'rules' => 'required|is_unique[produk.nama_barang]',
-                'errors' => [
-                    'required' => 'Nama barang harus diisi.',
-                    'is_unique' => 'Nama barang sudah ada, gunakan nama lain.',
-                ],
-            ],
-            'kategori' => [
-                'rules' => 'required|alpha',
-                'errors' => [
-                    'required' => 'kategori harus diisi.',
-                    'alpha' => 'Kategori harus berupa huruf.',
-                ],
-            ],
-            'harga_beli' => [
-                'rules' => 'required|numeric',
-                'errors' => [
-                    'required' => 'harga beli barang harus diisi.',
-                    'integer' => 'harga beli barang harus berupa angka.',
-                ],
-            ],
-            'harga_jual' => [
-                'rules' => 'required|numeric',
-                'errors' => [
-                    'required' => 'harga jual barang harus diisi.',
-                    'integer' => 'harga jual barang harus berupa angka.',
-                ],
-            ],
-            'stock_barang' => [
-                'rules' => 'required|numeric',
-                'errors' => [
-                    'required' => 'stock barang harus diisi.',
-                    'integer' => 'stock barang harus berupa angka.',
-                ],
-            ],
-            'image' => [
-                'rules' => 'uploaded[image]|mime_in[image,image/jpg,image/jpeg,image/png]|max_size[image,100]',
-                'errors' => [
-                    'uploaded' => 'Gambar produk wajib diunggah.',
-                    'mime_in' => 'File yang diunggah harus berupa gambar jpg dan png.',
-                    'max_size' => 'Ukuran gambar maksimal adalah 100KB.',
-                ],
-            ],
-        ]);
+        $validation->setRules(['nama_barang' => 'required', 'kategori' => 'required', 'harga_beli' => 'required|numeric', 'harga_jual' => 'required|numeric', 'stock_barang' => 'required|integer', 'image' => 'permit_empty|string']);
         $isDataValid = $validation->withRequest($this->request)->run();
         // jika data valid, simpan ke database
         if ($isDataValid) {
             $produk = new ProductModel();
-            $produk->save([
+            $produk->insert([
                 "nama_barang" => $this->request->getPost('nama_barang'),
                 "kategori" => $this->request->getPost('kategori'),
                 "harga_beli" => $this->request->getPost('harga_beli'),

@@ -1,7 +1,7 @@
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <img class="img-profile image-wrapper"
-            src="<?php echo base_url('icon/Frame 98700.png'); ?>">
+        <img class="img-profile image-wrapper rounded-circle"
+            src="<?php echo base_url('image/me.png'); ?>" width="120px" height="120px">
     </div>
     <h1 class="h3 mb-4 text-gray-800"><strong>Rahmat Hidayat</strong></h1>
 
