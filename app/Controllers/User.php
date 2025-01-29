@@ -14,6 +14,7 @@ class User extends BaseController
         echo view('layout/header', $data);
         echo view('pages/auth/login', $data);
         echo view('layout/footer');
+        return;
     }
 
     public function auth()
@@ -60,6 +61,7 @@ class User extends BaseController
         echo view('layout/header', $data);
         echo view('pages/auth/register', $data);
         echo view('layout/footer');
+        return;
     }
 
     public function proses_register()
@@ -93,6 +95,46 @@ class User extends BaseController
         echo view('layout/sidebar');
         echo view('pages/profil', $data);
         echo view('layout/footer');
+        return;
+    }
+
+    public function forgotPassword()
+    {
+        $data = [
+            'title' => 'Lupa Password'
+        ];
+        echo view('layout/header', $data);
+        echo view('pages/auth/forgot_password', $data);
+        echo view('layout/footer');
+        return;
+    }
+
+    public function processForgotPassword()
+    {
+        $email = $this->request->getPost('email');
+        $userModel = new UserModel();
+        $user = $userModel->where('email', $email)->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Email tidak terdaftar.');
+        }
+
+        // Generate token
+        $token = bin2hex(random_bytes(50));
+        $userModel->update($user['id'], ['reset_token' => $token]);
+
+        // Kirim email
+        $emailService = \Config\Services::email();
+        $emailService->setTo($email);
+        $emailService->setFrom(getenv('daiiat65@gmail.com'), getenv('Codeigniter4'));
+        $emailService->setSubject('Reset Password');
+        $emailService->setMessage("Klik link berikut untuk reset password: " . base_url("reset-password/$token"));
+
+        if ($emailService->send()) {
+            return redirect()->back()->with('success', 'Email reset password telah dikirim.');
+        } else {
+            return redirect()->back()->with('error', 'Gagal mengirim email.');
+        }
     }
 
     public function logout()

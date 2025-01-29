@@ -90,7 +90,7 @@ class Autoload extends AutoloadConfig
      *
      * @var list<string>
      */
-    public $helpers = ['url','form','download','file'];
+    public $helpers = ['url','form','download','file', 'email'];
     
     public $libraries = ['database','session', 'form_validation', 'upload'];
 }

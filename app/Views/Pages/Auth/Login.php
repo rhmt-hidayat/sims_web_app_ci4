@@ -64,6 +64,9 @@
                     <div class="text-center mt-3">
                         <a class="small" href="<?php echo base_url() . 'register'; ?>">Create an Account!</a>
                     </div>
+                    <div class="text-center">
+                        <a style="color: red;" class="small" href="<?php echo base_url() . 'forgot-password'; ?>">Forgot Password?</a>
+                    </div>
                     <!-- Flashdata Pesan -->
                     <?php if (session()->getFlashdata('success')): ?>
                         <div style="color: green; border: 1px solid green; padding: 10px;" class="alert alert-success mt-5">

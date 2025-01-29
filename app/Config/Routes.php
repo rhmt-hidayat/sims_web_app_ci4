@@ -10,6 +10,8 @@ $routes->get('/', 'User::index');
 $routes->post('/auth', 'User::auth');
 $routes->get('/register', 'User::register');
 $routes->post('/authRegister', 'User::proses_register');
+$routes->get('/forgot-password', 'User::forgotPassword');
+$routes->post('/forgot-password', 'User::processForgotPassword');
 $routes->get('/logout', 'User::logout');
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {
