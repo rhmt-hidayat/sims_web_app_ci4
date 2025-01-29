@@ -21,4 +21,5 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/produk/(:segment)/delete', 'Produk::delete/$1');
     $routes->get('/produk/export', 'Produk::export');
     // $routes->get('/produk/export/(:any)', 'Produk::export/$1');
+    $routes->get('/produk/print/(:num)', 'Produk::cetak_invoice/$1');
 });

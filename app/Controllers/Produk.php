@@ -60,6 +60,7 @@ class Produk extends BaseController
         $data = [
             'title' => 'Detail Produk',
             'produk' => $produkModel->where('id', $id)->first(),
+            'id' => $id,
         ];
 
         // tampilkan 404 error jika data tidak ditemukan
@@ -171,6 +172,24 @@ class Produk extends BaseController
         $produk->delete($id);
         session()->setFlashdata('error', 'Produk berhasil dihapus.');
         return redirect('produk');
+    }
+
+    public function cetak_invoice($id)
+    {
+        $produkModel = new ProductModel();
+        $data = [
+            'title' => 'Cetak Invoice',
+            'produk' => $produkModel->where('id', $id)->first(),
+            'id' => $id,
+            'tanggal' => date('Y-m-d H:i:s'),
+        ];
+
+        // tampilkan 404 error jika data tidak ditemukan
+        if (!$data['produk']) {
+            throw PageNotFoundException::forPageNotFound();
+        }
+
+        return view('pages/produk/invoice', $data);
     }
 
     public function export()
