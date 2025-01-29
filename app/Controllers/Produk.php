@@ -22,15 +22,19 @@ class Produk extends BaseController
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/');
         }
-
         //membuat nomor halaman pagination
         $currentPage = $this->request->getVar('page_produk') ? $this->request->getVar('page_produk') : 1;
-        //cari barang
+        //cari barang berdasarkan nama barang
         $keyword = $this->request->getVar('keyword');
         if ($keyword) {
             $produk = $this->productModel->search($keyword);
         } else {
             $produk = $this->productModel;
+        }
+        // Ambil kategori dari dropdown filter
+        $kategoriId = $this->request->getGet('kategori');
+        if ($kategoriId) {
+            $produk = $produk->where('kategori', $kategoriId);
         }
 
         $data = [
@@ -65,6 +69,7 @@ class Produk extends BaseController
         echo view('layout/sidebar');
         echo view('pages/produk/detail', $data);
         echo view('layout/footer');
+        return;
     }
 
     public function create()
@@ -78,6 +83,10 @@ class Produk extends BaseController
         $validation =  \Config\Services::validation();
         $validation->setRules(['nama_barang' => 'required', 'kategori' => 'required', 'harga_beli' => 'required|numeric', 'harga_jual' => 'required|numeric', 'stock_barang' => 'required|integer', 'image' => 'permit_empty|string']);
         $isDataValid = $validation->withRequest($this->request)->run();
+
+        //upload image
+        // $file = $this->request->getFile('fileInput');
+
         // jika data valid, simpan ke database
         if ($isDataValid) {
             $produk = new ProductModel();
@@ -98,6 +107,7 @@ class Produk extends BaseController
         echo view('layout/sidebar');
         echo view('pages/produk/create', $data);
         echo view('layout/footer');
+        return;
     }
 
     public function edit($id)
@@ -150,6 +160,7 @@ class Produk extends BaseController
         echo view('layout/sidebar');
         echo view('pages/produk/edit', $data);
         echo view('layout/footer');
+        return;
     }
 
     public function delete($id)

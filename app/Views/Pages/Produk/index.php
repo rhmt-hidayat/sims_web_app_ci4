@@ -31,14 +31,16 @@
                 </div>
             </form>
 
-            <select id="kategori" class="form-select">
-                <option value="">
-                    <img src="<?= base_url('icon/Package.png'); ?>" class="img-fluid" alt="logo">
-                    Semua
-                </option>
-                <option value="olahraga">Alat Olahraga</option>
-                <option value="musik">Alat Musik</option>
-            </select>
+            <form id="filterForm" method="get" action="<?= base_url('/produk'); ?>" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+                <select id="kategori" name="kategori" onchange="submitForm()" class="form-select">
+                    <option value="">
+                        <img src="<?= base_url('icon/Package.png'); ?>" class="img-fluid" alt="logo">
+                        Semua
+                    </option>
+                    <option value="Alat Olahraga">Alat Olahraga</option>
+                    <option value="Alat Music">Alat Music</option>
+                </select>
+            </form>
         </div>
         <div class="col-lg-6 mb-4 text-right">
             <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><img src="<?php echo base_url('icon/MicrosoftExcelLogo.png'); ?>" class="img-fluid" alt="logo"> Export Excel</a>
@@ -68,8 +70,8 @@
                         <td width="1%"><img src="<?php echo base_url('icon/') . $rows['image']; ?>" class="img-fluid" alt="logo"></td>
                         <td><?= $rows['nama_barang'] ?></td>
                         <td><?= $rows['kategori'] ?></td>
-                        <td><?= $rows['harga_beli'] ?></td>
-                        <td><?= $rows['harga_jual'] ?></td>
+                        <td><?= number_format($rows['harga_beli'], 0, ',', ','); ?></td>
+                        <td><?= number_format($rows['harga_jual'], 0, ',', ','); ?></td>
                         <td><?= $rows['stock_barang'] ?></td>
                         <td>
                             <a href="/produk/<?= $rows['id'] ?>"><i class="fas fa-eye"></i></a>
@@ -117,5 +119,9 @@
     function confirmToDelete(el) {
         $("#delete-button").attr("href", el.dataset.href);
         $("#confirm-dialog").modal('show');
+    }
+
+    function submitForm() {
+        document.getElementById("filterForm").submit();
     }
 </script>
