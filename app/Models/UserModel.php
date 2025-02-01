@@ -8,7 +8,7 @@ class UserModel extends Model
     protected $primaryKey = 'id';
 
     protected $useAutoIncrement = true;
-    protected $allowedFields = ['id', 'nama', 'email', 'password', 'password_decrypt', 'posisi', 'last_login', 'create_date'];
+    protected $allowedFields = ['id', 'nama', 'email', 'password', 'password_decrypt', 'posisi', 'last_login', 'create_date', 'reset_token'];
 
 	public function get_data($email, $password)
 	{

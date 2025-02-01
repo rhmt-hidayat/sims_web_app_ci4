@@ -119,22 +119,60 @@ class User extends BaseController
             return redirect()->back()->with('error', 'Email tidak terdaftar.');
         }
 
-        // Generate token
-        $token = bin2hex(random_bytes(50));
+        $token = bin2hex(random_bytes(50)); // Generate token
         $userModel->update($user['id'], ['reset_token' => $token]);
+        // dd($tokenId);
 
-        // Kirim email
-        $emailService = \Config\Services::email();
+        $emailService = \Config\Services::email(); // Kirim email
         $emailService->setTo($email);
         $emailService->setFrom(getenv('daiiat65@gmail.com'), getenv('Codeigniter4'));
         $emailService->setSubject('Reset Password');
         $emailService->setMessage("Klik link berikut untuk reset password: " . base_url("reset-password/$token"));
 
         if ($emailService->send()) {
-            return redirect()->back()->with('success', 'Email reset password telah dikirim.');
+            return redirect()->to('/')->with('success', 'Email reset password telah dikirim.');
         } else {
-            return redirect()->back()->with('error', 'Gagal mengirim email.');
+            return redirect()->to('/')->with('error', 'Gagal mengirim email.');
         }
+    }
+
+    public function resetPassword($token)
+    {
+        $userModel = new UserModel();
+        $user = $userModel->where('reset_token', $token)->first();
+
+        if (!$user) {
+            return redirect()->to('/')->with('error', 'Token tidak valid.');
+        }
+
+        $data = [
+            'title' => 'Reset Password',
+            'token' => $token,
+        ];
+        echo view('layout/header', $data);
+        echo view('pages/auth/reset_password', $data);
+        echo view('layout/footer');
+        return;
+    }
+
+    public function processResetPassword()
+    {
+        $token = $this->request->getPost('token');
+        $password = $this->request->getPost('password');
+
+        $userModel = new UserModel();
+        $user = $userModel->where('reset_token', $token)->first();
+
+        if (!$user) {
+            return redirect()->to('/')->with('error', 'Token tidak valid.');
+        }
+
+        $userModel->update($user['id'], [
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+            'reset_token' => null
+        ]);
+
+        return redirect()->to('/')->with('success', 'Password berhasil diubah.');
     }
 
     public function logout()
