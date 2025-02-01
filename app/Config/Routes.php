@@ -12,8 +12,8 @@ $routes->get('/register', 'User::register');
 $routes->post('/authRegister', 'User::proses_register');
 $routes->get('/forgot-password', 'User::forgotPassword');
 $routes->post('/forgot-password', 'User::processForgotPassword');
-$routes->get('/reset-password/(:any)', 'Auth::resetPassword/$1');
-$routes->post('/reset-password', 'Auth::processResetPassword');
+$routes->get('/reset-password/(:any)', 'User::resetPassword/$1');
+$routes->post('/reset-password', 'User::processResetPassword');
 $routes->get('/logout', 'User::logout');
 
 $routes->group('', ['filter' => 'auth'], function ($routes) {

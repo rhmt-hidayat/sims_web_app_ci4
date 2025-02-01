@@ -47,6 +47,7 @@
                                     <p class="mb-4">Silahkan masukkan password baru Anda</p>
                                 </div>
                                 <form class="user" action="<?= base_url('reset-password') ?>" method="post">
+                                    <input type="hidden" name="token" value="<?= $token ?>">
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
                                             id="password" name="password" aria-describedby="password"

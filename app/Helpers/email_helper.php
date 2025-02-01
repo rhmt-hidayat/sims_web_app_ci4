@@ -9,14 +9,14 @@ function send_email($to, $subject, $message)
 
     try {
         $mail->isSMTP();
-        $mail->Host = getenv('sandbox.smtp.mailtrap.io');
+        $mail->Host = getenv('EMAIL_HOST');
         $mail->SMTPAuth = true;
-        $mail->Username = getenv('94718dcc5a9686');
-        $mail->Password = getenv('a1934177759480');
+        $mail->Username = getenv('EMAIL_USER');
+        $mail->Password = getenv('EMAIL_PASS');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = getenv('2525');
+        $mail->Port = getenv('EMAIL_PORT');
 
-        $mail->setFrom(getenv('daiiat65@gmail.com'), getenv('Codeigniter4'));
+        $mail->setFrom(getenv('EMAIL_FROM'), getenv('EMAIL_NAME'));
         $mail->addAddress($to);
         $mail->isHTML(true);
         $mail->Subject = $subject;
@@ -27,3 +27,4 @@ function send_email($to, $subject, $message)
         return "Mailer Error: " . $mail->ErrorInfo;
     }
 }
+

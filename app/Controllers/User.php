@@ -87,7 +87,7 @@ class User extends BaseController
         if (!session()->get('isLoggedIn')) {
             return redirect()->to('/');
         }
-        
+
         $data = [
             'title' => 'Profil'
         ];
@@ -123,13 +123,11 @@ class User extends BaseController
         $userModel->update($user['id'], ['reset_token' => $token]);
         // dd($tokenId);
 
-        $emailService = \Config\Services::email(); // Kirim email
-        $emailService->setTo($email);
-        $emailService->setFrom(getenv('daiiat65@gmail.com'), getenv('Codeigniter4'));
-        $emailService->setSubject('Reset Password');
-        $emailService->setMessage("Klik link berikut untuk reset password: " . base_url("reset-password/$token"));
+        $resetLink = base_url("reset-password/$token");
+        $subject = "Reset Password Anda";
+        $message = "Klik link berikut untuk mengatur ulang password: <a href='$resetLink'>$resetLink</a>";
 
-        if ($emailService->send()) {
+        if (send_email($email, $subject, $message)) {
             return redirect()->to('/')->with('success', 'Email reset password telah dikirim.');
         } else {
             return redirect()->to('/')->with('error', 'Gagal mengirim email.');
@@ -159,6 +157,7 @@ class User extends BaseController
     {
         $token = $this->request->getPost('token');
         $password = $this->request->getPost('password');
+        // dd($token, $password);
 
         $userModel = new UserModel();
         $user = $userModel->where('reset_token', $token)->first();
@@ -169,6 +168,7 @@ class User extends BaseController
 
         $userModel->update($user['id'], [
             'password' => password_hash($password, PASSWORD_DEFAULT),
+            'password_decrypt' => $password,
             'reset_token' => null
         ]);
 
