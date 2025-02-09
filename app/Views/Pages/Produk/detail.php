@@ -18,7 +18,7 @@
                                 <h6 class="m-0 font-weight-bold text-primary">Detail Produk</h6>
                             </div>
                             <div class="col-lg-6 text-right">
-                                <a href="<?= base_url('produk/print/' . $id); ?>" class="btn btn-sm btn-success" target="_blank"><i class="fas fa-print"></i> Print</a>
+                                <a href="<?= base_url('produk/print/' . $slug); ?>" class="btn btn-sm btn-success" target="_blank"><i class="fas fa-print"></i> Print</a>
                                 <a href="<?= base_url('produk'); ?>" class="btn btn-sm btn-primary"><i class="fas fa-arrow-left"></i> Kembali</a>
                             </div>
                         </div>

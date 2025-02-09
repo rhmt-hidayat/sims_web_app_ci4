@@ -50,18 +50,17 @@ class Produk extends BaseController
         return view('pages/produk/index', $data);
     }
 
-    public function detail($id)
+    public function detail($slug)
     {
-        $produkModel = new ProductModel();
         $data = [
             'title' => 'Detail Produk',
-            'produk' => $produkModel->where('id', $id)->first(),
-            'id' => $id,
+            'produk' => $this->productModel->getProduk($slug),
+            'slug' => $slug
         ];
 
         // tampilkan 404 error jika data tidak ditemukan
         if (!$data['produk']) {
-            throw PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound('Nama Barang ' . $slug . ' tidak ditemukan');
         }
 
         return view('pages/produk/detail', $data);
@@ -81,18 +80,17 @@ class Produk extends BaseController
 
         //upload image
         // $file = $this->request->getFile('fileInput');
-
         // jika data valid, simpan ke database
         if ($isDataValid) {
             $produk = new ProductModel();
             $produk->insert([
                 "nama_barang" => $this->request->getPost('nama_barang'),
+                "slug" => url_title($this->request->getPost('nama_barang'), '-', true),
                 "kategori" => $this->request->getPost('kategori'),
                 "harga_beli" => $this->request->getPost('harga_beli'),
                 "harga_jual" => $this->request->getPost('harga_jual'),
                 "stock_barang" => $this->request->getPost('stock_barang'),
                 "image" => $this->request->getPost('image'),
-                "create_date" => date('Y-m-d H:i:s'),
             ]);
             session()->setFlashdata('success', 'Produk berhasil disimpan.');
             return redirect()->to('produk')->with('success', 'Produk berhasil ditambahkan.');

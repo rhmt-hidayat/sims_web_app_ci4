@@ -7,10 +7,16 @@ use CodeIgniter\Model;
 class ProductModel extends Model
 {
     protected $table      = 'produk';
-    protected $primaryKey = 'id';
+    protected $useTimestamps = true;
+    protected $allowedFields = ['id', 'nama_barang', 'slug', 'kategori', 'harga_beli', 'harga_jual', 'stock_barang', 'image'];
 
-    protected $useAutoIncrement = true;
-    protected $allowedFields = ['id', 'nama_barang', 'kategori', 'harga_beli', 'harga_jual', 'stock_barang', 'image', 'create_date', 'last_date'];
+    public function getProduk($slug = false)
+    {
+        if ($slug === false) {
+            return $this->findAll();
+        }
+        return $this->where(['slug' => $slug])->first();
+    }
 
     public function search($keyword) {
         // $builder = $this->table('produk');    

@@ -81,7 +81,7 @@
                             <td><?= number_format($rows['harga_jual'], 0, ',', ','); ?></td>
                             <td><?= $rows['stock_barang'] ?></td>
                             <td>
-                                <a href="/produk/<?= $rows['id'] ?>"><i class="fas fa-eye"></i></a>
+                                <a href="/produk/detail/<?= $rows['slug'] ?>"><i class="fas fa-eye"></i></a>
                                 <a href="<?= base_url('produk/' . $rows['id'] . '/edit') ?>"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
                                 <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" data-href="<?= base_url('produk/' . $rows['id'] . '/delete') ?>" onclick="confirmToDelete(this)" class="img-fluid" alt="logo"></a>
                             </td>
