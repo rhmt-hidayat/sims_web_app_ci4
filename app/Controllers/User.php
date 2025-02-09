@@ -91,11 +91,8 @@ class User extends BaseController
         $data = [
             'title' => 'Profil'
         ];
-        echo view('layout/header', $data);
-        echo view('layout/sidebar');
-        echo view('pages/profil', $data);
-        echo view('layout/footer');
-        return;
+
+        return view('pages/profil', $data);
     }
 
     public function forgotPassword()

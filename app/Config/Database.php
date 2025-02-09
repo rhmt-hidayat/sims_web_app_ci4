@@ -28,7 +28,7 @@ class Database extends Config
         'DSN'          => '',
         'hostname'     => 'localhost',
         'username'     => 'root',
-        'password'     => 'com15pazt',
+        'password'     => '',
         'database'     => 'db_sims',
         'DBDriver'     => 'MySQLi',
         'DBPrefix'     => '',

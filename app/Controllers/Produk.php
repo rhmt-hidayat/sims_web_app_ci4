@@ -47,11 +47,7 @@ class Produk extends BaseController
             'currentPage' => $currentPage
         ];
 
-        echo view('layout/header', $data);
-        echo view('layout/sidebar');
-        echo view('pages/produk/index', $data);
-        echo view('layout/footer');
-        return;
+        return view('pages/produk/index', $data);
     }
 
     public function detail($id)
@@ -68,11 +64,7 @@ class Produk extends BaseController
             throw PageNotFoundException::forPageNotFound();
         }
 
-        echo view('layout/header', $data);
-        echo view('layout/sidebar');
-        echo view('pages/produk/detail', $data);
-        echo view('layout/footer');
-        return;
+        return view('pages/produk/detail', $data);
     }
 
     public function create()
@@ -106,11 +98,7 @@ class Produk extends BaseController
             return redirect()->to('produk')->with('success', 'Produk berhasil ditambahkan.');
         }
 
-        echo view('layout/header', $data);
-        echo view('layout/sidebar');
-        echo view('pages/produk/create', $data);
-        echo view('layout/footer');
-        return;
+        return view('pages/produk/create', $data);
     }
 
     public function edit($id)
@@ -159,11 +147,7 @@ class Produk extends BaseController
             return redirect()->to('produk')->with('success', 'Produk berhasil diperbarui.');
         }
 
-        echo view('layout/header', $data);
-        echo view('layout/sidebar');
-        echo view('pages/produk/edit', $data);
-        echo view('layout/footer');
-        return;
+        return view('pages/produk/edit', $data);
     }
 
     public function delete($id)
