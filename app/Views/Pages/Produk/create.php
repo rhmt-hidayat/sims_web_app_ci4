@@ -43,61 +43,73 @@
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group mb-3">
                                 <label for="kategori" class="form-label">Kategori</label>
-                                <select id="kategori" name="kategori" class="form-select <?= ($validation->hasError('kategori')) ? 'is-invalid' : ''; ?>">
+                                <select id="kategori" name="kategori" class="form-select <?= isset(session()->getFlashdata('errors')['kategori']) ? 'is-invalid' : '' ?>" value="<?= old('kategori'); ?>">
                                     <option value="">Pilih Kategori</option>
                                     <?php foreach ($kategori as $item): ?>
                                         <option value="<?= $item['nama_kategori']; ?>"><?= $item['nama_kategori']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
-                                <div class="invalid-feedback"><?= $validation->getError('kategori'); ?></div>
+                                <?php if (isset(session()->getFlashdata('errors')['kategori'])): ?>
+                                    <div class="invalid-feedback"><?= session()->getFlashdata('errors')['kategori']; ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="nama_barang">Nama Barang</label>
-                                <input type="text" class="form-control <?= ($validation->hasError('nama_barang')) ? 'is-invalid' : ''; ?>" id="nama_barang" name="nama_barang" placeholder="Masukan Nama Barang">
-                                <div class="invalid-feedback"><?= $validation->getError('nama_barang'); ?></div>
+                                <input type="text" class="form-control <?= isset(session()->getFlashdata('errors')['nama_barang']) ? 'is-invalid' : '' ?>" id="nama_barang" name="nama_barang" placeholder="Masukan Nama Barang" autofocus value="<?= old('nama_barang'); ?>">
+                                <?php if (isset(session()->getFlashdata('errors')['nama_barang'])): ?>
+                                    <div class="invalid-feedback"><?= session()->getFlashdata('errors')['nama_barang']; ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group">
                                 <label for="harga_beli">Harga Beli</label>
-                                <input type="text" class="form-control <?= ($validation->hasError('harga_beli')) ? 'is-invalid' : ''; ?>" id="harga_beli" name="harga_beli" placeholder="Masukan Harga Beli">
-                                <div class="invalid-feedback"><?= $validation->getError('harga_beli'); ?></div>
+                                <input type="text" class="form-control <?= isset(session()->getFlashdata('errors')['harga_beli']) ? 'is-invalid' : '' ?>" id="harga_beli" name="harga_beli" placeholder="Masukan Harga Beli" value="<?= old('harga_beli'); ?>">
+                                <?php if (isset(session()->getFlashdata('errors')['harga_beli'])): ?>
+                                    <div class="invalid-feedback"><?= session()->getFlashdata('errors')['harga_beli']; ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="harga_jual">Harga Jual</label>
-                                <input type="text" class="form-control <?= ($validation->hasError('harga_jual')) ? 'is-invalid' : ''; ?>" id="harga_jual" name="harga_jual" placeholder="Masukan Harga Jual">
-                                <div class="invalid-feedback"><?= $validation->getError('harga_jual'); ?></div>
+                                <input type="text" class="form-control <?= isset(session()->getFlashdata('errors')['harga_jual']) ? 'is-invalid' : '' ?>" id="harga_jual" name="harga_jual" placeholder="Masukan Harga Jual" value="<?= old('harga_jual'); ?>">
+                                <?php if (isset(session()->getFlashdata('errors')['harga_jual'])): ?>
+                                    <div class="invalid-feedback"><?= session()->getFlashdata('errors')['harga_jual']; ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="stock_barang">Stock Barang</label>
-                                <input type="text" class="form-control <?= ($validation->hasError('stock_barang')) ? 'is-invalid' : ''; ?>" id="stok_barang" name="stock_barang" placeholder="Masukan Stock Barang">
-                                <div class="invalid-feedback"><?= $validation->getError('stock_barang'); ?></div>
+                                <input type="text" class="form-control <?= isset(session()->getFlashdata('errors')['stock_barang']) ? 'is-invalid' : '' ?>" id="stok_barang" name="stock_barang" placeholder="Masukan Stock Barang" value="<?= old('stock_barang'); ?>">
+                                <?php if (isset(session()->getFlashdata('errors')['stock_barang'])): ?>
+                                    <div class="invalid-feedback"><?= session()->getFlashdata('errors')['stock_barang']; ?></div>
+                                <?php endif; ?>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-8 col-sm-12">
-                            <div class="form-group">
-                                <label for="image">Upload Image</label>
-                                <input type="text" class="form-control <?= ($validation->hasError('image')) ? 'is-invalid' : ''; ?>" id="image" name="image" placeholder="contoh image">
-                                <div class="invalid-feedback"><?= $validation->getError('image'); ?></div>
-                            </div>
+                            <label for="image" class="form-label">Pilih Gambar</label>
+                            <input type="file" class="form-control <?= isset(session()->getFlashdata('errors')['image']) ? 'is-invalid' : '' ?>" id="image" name="image" accept="image/*" value="<?= old('image'); ?>">
+                            <?php if (isset(session()->getFlashdata('errors')['image'])): ?>
+                                <div class="invalid-feedback">
+                                    <?= session()->getFlashdata('errors')['image']; ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                         <!-- <div class="col-lg-12 col-md-8 col-sm-12">
-                        <div class="form-group">
-                            <label for="stock">Upload Image</label>
-                            <div id="dropzone" class="dropzone">
-                                <img src="<?php echo base_url('icon/image.png'); ?>" alt="Preview Gambar">
-                                <p>Upload gambar disini</p>
-                                <input type="file" id="fileInput" accept="image/*" style="display: none;">
-                                <img id="preview" src="" alt="Preview Gambar" class="d-none">
+                            <div class="form-group">
+                                <label for="stock">Upload Image</label>
+                                <div id="dropzone" class="dropzone">
+                                    <img src="<?php echo base_url('icon/image.png'); ?>" alt="Preview Gambar">
+                                    <p>Upload gambar disini</p>
+                                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                                    <img id="preview" src="" alt="Preview Gambar" class="d-none">
+                                </div>
                             </div>
-                        </div>
-                    </div> -->
+                        </div> -->
                     </div>
                     <div class="d-flex justify-content-end">
                         <a href="<?php echo base_url() . '/produk'; ?>" class="btn btn-outline-primary px-5 m-sm-2">Batalkan</a>

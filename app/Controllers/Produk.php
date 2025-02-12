@@ -79,7 +79,8 @@ class Produk extends BaseController
 
     public function insert()
     {
-        if (!$this->validate([
+        $validation = \Config\Services::validation();
+        $validation->setRules([
             'kategori' => [
                 'rules' => 'required',
                 'errors' => [
@@ -116,18 +117,41 @@ class Produk extends BaseController
                 ],
             ],
             'image' => [
-                'rules' => 'uploaded[image]|max_size[image,100]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'rules'  => 'uploaded[image]|is_image[image]|max_size[image,100]|mime_in[image,image/jpg,image/jpeg,image/png]',
                 'errors' => [
-                    'uploaded' => 'image harus diisi.',
-                    'max_size' => 'ukuran image maksimal 100kb.',
-                    'is_image' => 'yang anda upload bukan gambar.',
-                    'mime_in' => 'yang anda upload bukan gambar.',
+                    'uploaded' => 'File harus diunggah.',
+                    'is_image' => 'Yang diunggah harus berupa gambar.',
+                    'max_size' => 'Ukuran gambar maksimal 100kb.',
+                    'mime_in'  => 'Format file harus JPG, JPEG, atau PNG.',
                 ],
             ],
-        ])) {
-            $validation = \Config\Services::validation();
-            session()->setFlashdata('validation', $validation);
-            return redirect()->back()->withInput();
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+        // Ambil file yang diunggah
+        $file = $this->request->getFile('image');
+        if ($file->isValid() && !$file->hasMoved()) {
+            $newName = $file->getName();
+            $file->move('uploads/', $newName); //nama folder di public
+            // $file->move(WRITEPATH . 'uploads', $newName); //jika folder diluar public
+
+            $slug = url_title($this->request->getPost('nama_barang'), '-', true);
+            $this->productModel->insert([
+                'nama_barang' => $this->request->getPost('nama_barang'),
+                'slug' => $slug,
+                'kategori' => $this->request->getPost('kategori'),
+                'harga_beli' => $this->request->getPost('harga_beli'),
+                'harga_jual' => $this->request->getPost('harga_jual'),
+                'stock_barang' => $this->request->getPost('stock_barang'),
+                'image' => $newName,
+            ]);
+
+            session()->setFlashdata('success', 'Produk berhasil ditambahkan');
+            return redirect()->to('produk');
+        } else {
+            return redirect()->back()->with('error', 'Gagal tambah produk');
         }
     }
 

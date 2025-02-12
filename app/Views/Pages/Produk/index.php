@@ -74,7 +74,7 @@
                     foreach ($produk as $rows) : ?>
                         <tr>
                             <td><?= $no++; ?></td>
-                            <td width="1%"><img src="<?php echo base_url('icon/') . $rows['image']; ?>" class="img-fluid" alt="logo"></td>
+                            <td width="1%"><img src="<?php echo base_url('uploads/') . $rows['image']; ?>" class="img-fluid" alt="logo"></td>
                             <td><?= $rows['nama_barang'] ?></td>
                             <td><?= $rows['kategori'] ?></td>
                             <td><?= number_format($rows['harga_beli'], 0, ',', ','); ?></td>

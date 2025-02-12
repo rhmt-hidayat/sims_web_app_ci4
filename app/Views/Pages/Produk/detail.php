@@ -26,7 +26,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-4">
-                                <img src="<?= base_url('icon/' . $produk['image']); ?>" class="img-fluid" alt="logo">
+                                <img src="<?= base_url('uploads/' . $produk['image']); ?>" class="img-fluid" alt="logo">
                             </div>
                             <div class="col-lg-8">
                                 <div class="form-group">
