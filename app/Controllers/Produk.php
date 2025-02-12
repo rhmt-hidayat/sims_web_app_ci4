@@ -68,35 +68,67 @@ class Produk extends BaseController
 
     public function create()
     {
-        $kategoriModel = new KategoriModel();
         $data = [
             'title' => 'Tambah Produk',
-            'kategori' => $kategoriModel->findAll()
+            'kategori' => $this->kategoriModel->findAll(),
+            'validation' => session()->getFlashdata('validation') ?? \Config\Services::validation(),
         ];
-        // lakukan validasi
-        $validation =  \Config\Services::validation();
-        $validation->setRules(['nama_barang' => 'required', 'kategori' => 'required', 'harga_beli' => 'required|numeric', 'harga_jual' => 'required|numeric', 'stock_barang' => 'required|integer', 'image' => 'permit_empty|string']);
-        $isDataValid = $validation->withRequest($this->request)->run();
-
-        //upload image
-        // $file = $this->request->getFile('fileInput');
-        // jika data valid, simpan ke database
-        if ($isDataValid) {
-            $produk = new ProductModel();
-            $produk->insert([
-                "nama_barang" => $this->request->getPost('nama_barang'),
-                "slug" => url_title($this->request->getPost('nama_barang'), '-', true),
-                "kategori" => $this->request->getPost('kategori'),
-                "harga_beli" => $this->request->getPost('harga_beli'),
-                "harga_jual" => $this->request->getPost('harga_jual'),
-                "stock_barang" => $this->request->getPost('stock_barang'),
-                "image" => $this->request->getPost('image'),
-            ]);
-            session()->setFlashdata('success', 'Produk berhasil disimpan.');
-            return redirect()->to('produk')->with('success', 'Produk berhasil ditambahkan.');
-        }
 
         return view('pages/produk/create', $data);
+    }
+
+    public function insert()
+    {
+        if (!$this->validate([
+            'kategori' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Kategori harus diisi',
+                ],
+            ],
+            'nama_barang' => [
+                'rules' => 'required|is_unique[produk.nama_barang]',
+                'errors' => [
+                    'required' => 'Nama barang produk harus diisi',
+                    'is_unique' => 'Nama barang produk sudah ada'
+                ],
+            ],
+            'harga_beli' => [
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'Harga beli harus diisi',
+                    'numeric' => 'Harga beli harus berupa angka',
+                ],
+            ],
+            'harga_jual' => [
+                'rules' => 'required|numeric|min_harga_jual[harga_beli]',
+                'errors' => [
+                    'required' => 'Harga jual harus diisi',
+                    'numeric' => 'Harga jual harus berupa angka',
+                    'min_harga_jual' => 'Harga jual harus setidaknya 30% lebih tinggi dari harga beli.',
+                ],
+            ],
+            'stock_barang' => [
+                'rules' => 'required|integer',
+                'errors' => [
+                    'required' => 'Stock barang harus diisi',
+                    'integer' => 'Stock barang harus berupa angka',
+                ],
+            ],
+            'image' => [
+                'rules' => 'uploaded[image]|max_size[image,100]|is_image[image]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'image harus diisi.',
+                    'max_size' => 'ukuran image maksimal 100kb.',
+                    'is_image' => 'yang anda upload bukan gambar.',
+                    'mime_in' => 'yang anda upload bukan gambar.',
+                ],
+            ],
+        ])) {
+            $validation = \Config\Services::validation();
+            session()->setFlashdata('validation', $validation);
+            return redirect()->back()->withInput();
+        }
     }
 
     public function edit($id)
@@ -150,25 +182,23 @@ class Produk extends BaseController
 
     public function delete($id)
     {
-        $produk = new ProductModel();
-        $produk->delete($id);
+        $this->productModel->delete($id);
         session()->setFlashdata('error', 'Produk berhasil dihapus.');
-        return redirect('produk');
+        return redirect()->to('produk');
     }
 
-    public function cetak_invoice($id)
+    public function cetak_invoice($slug)
     {
         $produkModel = new ProductModel();
         $data = [
             'title' => 'Cetak Invoice',
-            'produk' => $produkModel->where('id', $id)->first(),
-            'id' => $id,
+            'produk' => $produkModel->where('slug', $slug)->first(),
             'tanggal' => date('Y-m-d H:i:s'),
         ];
 
         // tampilkan 404 error jika data tidak ditemukan
         if (!$data['produk']) {
-            throw PageNotFoundException::forPageNotFound();
+            throw PageNotFoundException::forPageNotFound('Nama Barang ' . $slug . ' tidak ditemukan');
         }
 
         return view('pages/produk/invoice', $data);
@@ -180,7 +210,7 @@ class Produk extends BaseController
         $kategori = $this->request->getGet('kategori');
         if ($kategori) {
             $produk = $this->productModel->where('kategori', $kategori)->findAll();
-        }else{
+        } else {
             $produk = $this->productModel->findAll();
         }
 
@@ -200,8 +230,8 @@ class Produk extends BaseController
         $activeWorksheet->setCellValue('E3', 'Harga Jual');
         $activeWorksheet->setCellValue('F3', 'Stok');
 
-         // Style Header
-         $headerStyle = [
+        // Style Header
+        $headerStyle = [
             'font' => ['bold' => true, 'size' => 12, 'color' => ['argb' => 'FFFFFF']],
             'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
             'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
@@ -220,7 +250,7 @@ class Produk extends BaseController
             $activeWorksheet->setCellValue('D' . $column, $value['harga_beli']);
             $activeWorksheet->setCellValue('E' . $column, $value['harga_jual']);
             $activeWorksheet->setCellValue('F' . $column, $value['stock_barang']);
-            
+
             // Style border untuk data
             $activeWorksheet->getStyle("A$column:F$column")->applyFromArray([
                 'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]]

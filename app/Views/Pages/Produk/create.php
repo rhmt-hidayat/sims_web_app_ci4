@@ -37,54 +37,54 @@
 
         <div class="row m-sm-1">
             <div class="col-lg-12">
-                <form action="" method="post" enctype="multipart/form-data">
+                <form action="<?php echo base_url() . 'produk/insert'; ?>" method="post" enctype="multipart/form-data">
                     <?= csrf_field(); ?>
                     <div class="row align-items-center mb-3">
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group mb-3">
                                 <label for="kategori" class="form-label">Kategori</label>
-                                <select id="kategori" name="kategori" class="form-select">
+                                <select id="kategori" name="kategori" class="form-select <?= ($validation->hasError('kategori')) ? 'is-invalid' : ''; ?>">
                                     <option value="">Pilih Kategori</option>
                                     <?php foreach ($kategori as $item): ?>
                                         <option value="<?= $item['nama_kategori']; ?>"><?= $item['nama_kategori']; ?></option>
                                     <?php endforeach; ?>
                                 </select>
-
+                                <div class="invalid-feedback"><?= $validation->getError('kategori'); ?></div>
                             </div>
                         </div>
                         <div class="col-lg-8 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="nama_barang">Nama Barang</label>
-                                <input type="text" class="form-control" id="nama_barang" name="nama_barang" placeholder="Masukan Nama Barang" required>
-
+                                <input type="text" class="form-control <?= ($validation->hasError('nama_barang')) ? 'is-invalid' : ''; ?>" id="nama_barang" name="nama_barang" placeholder="Masukan Nama Barang">
+                                <div class="invalid-feedback"><?= $validation->getError('nama_barang'); ?></div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12">
                             <div class="form-group">
                                 <label for="harga_beli">Harga Beli</label>
-                                <input type="number" class="form-control" id="harga_beli" name="harga_beli" placeholder="Masukan Harga Beli" required>
-
+                                <input type="text" class="form-control <?= ($validation->hasError('harga_beli')) ? 'is-invalid' : ''; ?>" id="harga_beli" name="harga_beli" placeholder="Masukan Harga Beli">
+                                <div class="invalid-feedback"><?= $validation->getError('harga_beli'); ?></div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="harga_jual">Harga Jual</label>
-                                <input type="number" class="form-control" id="harga_jual" name="harga_jual" placeholder="Masukan Harga Jual" required>
-
+                                <input type="text" class="form-control <?= ($validation->hasError('harga_jual')) ? 'is-invalid' : ''; ?>" id="harga_jual" name="harga_jual" placeholder="Masukan Harga Jual">
+                                <div class="invalid-feedback"><?= $validation->getError('harga_jual'); ?></div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="stock_barang">Stock Barang</label>
-                                <input type="number" class="form-control" id="stok_barang" name="stock_barang" placeholder="Masukan Stock Barang" required>
-
+                                <input type="text" class="form-control <?= ($validation->hasError('stock_barang')) ? 'is-invalid' : ''; ?>" id="stok_barang" name="stock_barang" placeholder="Masukan Stock Barang">
+                                <div class="invalid-feedback"><?= $validation->getError('stock_barang'); ?></div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-8 col-sm-12">
                             <div class="form-group">
                                 <label for="image">Upload Image</label>
-                                <input type="text" class="form-control" id="image" name="image" placeholder="contoh image" required>
-
+                                <input type="text" class="form-control <?= ($validation->hasError('image')) ? 'is-invalid' : ''; ?>" id="image" name="image" placeholder="contoh image">
+                                <div class="invalid-feedback"><?= $validation->getError('image'); ?></div>
                             </div>
                         </div>
                         <!-- <div class="col-lg-12 col-md-8 col-sm-12">
