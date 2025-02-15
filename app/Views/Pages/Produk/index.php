@@ -50,6 +50,7 @@
                 </form>
             </div>
             <div class="col-lg-6 mb-4 text-right">
+                <a href="<?= base_url('produk/pdf'); ?>" class="btn btn-sm btn-secondary" target="_blank"><i class="fas fa-download"></i> PDF</a>
                 <a href="<?php echo base_url() . 'produk/export'; ?>" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><img src="<?php echo base_url('icon/MicrosoftExcelLogo.png'); ?>" class="img-fluid" alt="logo"> Export Excel</a>
                 <a href="<?php echo base_url() . 'produk/add'; ?>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><img src="<?php echo base_url('icon/PlusCircle.png'); ?>" class="img-fluid" alt="logo"> Tambah Produk</a>
             </div>

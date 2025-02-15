@@ -25,4 +25,9 @@ class ProductModel extends Model
 
         return $this->table('produk')->like('nama_barang', $keyword);
     }
+
+    public function getPdf()
+    {
+        return $this->limit(100)->findAll(); // Mengambil semua data produk
+    }
 }

@@ -26,6 +26,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->post('produk/update/(:num)', 'Produk::update/$1');
     $routes->get('/produk/delete/(:segment)', 'Produk::delete/$1');
     $routes->get('/produk/export', 'Produk::export');
+    $routes->get('/produk/pdf', 'Produk::generatePdf');
     // $routes->get('/produk/export/(:any)', 'Produk::export/$1'); //filter by kategori
     $routes->get('/produk/print/(:segment)', 'Produk::cetak_invoice/$1');
 });

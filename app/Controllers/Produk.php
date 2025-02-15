@@ -7,6 +7,8 @@ use App\Models\KategoriModel;
 use CodeIgniter\Exceptions\PageNotFoundException;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class Produk extends BaseController
 {
@@ -357,5 +359,35 @@ class Produk extends BaseController
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
         exit;
+    }
+
+    public function generatePdf()
+    {
+        $products = $this->productModel->getPdf();
+        // Pastikan setiap gambar memiliki path absolut
+        // foreach ($products as &$product) {
+        //     $product['image'] = base_url('public/uploads/' . $product['image']);
+        // }
+        $html = view('pages/produk/report_pdf', ['title' => 'Daftar Produk','products' => $products]);
+
+        // Konfigurasi Dompdf
+        $options = new Options();
+        $options->set('defaultFont', 'Helvetica');
+        $options->set('isHtml5ParserEnabled', true); // Aktifkan parsing HTML5 agar gambar dapat tampil
+        $options->set('isRemoteEnabled', true); // Izinkan pemuatan gambar eksternal
+        $dompdf = new Dompdf($options);
+
+        // Load konten HTML ke Dompdf
+        $dompdf->loadHtml($html);
+
+        // Set ukuran dan orientasi halaman (Opsional)
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Render PDF
+        $dompdf->render();
+        $date = date('Ymd');
+        ob_get_clean();
+        // Outputkan PDF ke browser
+        $dompdf->stream("ReportProduk_$date.pdf", ["Attachment" => false]);
     }
 }
