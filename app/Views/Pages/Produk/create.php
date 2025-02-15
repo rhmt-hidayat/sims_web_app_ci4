@@ -2,27 +2,32 @@
 
 <?= $this->section('content') ?>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <style>
     .dropzone {
         border: 2px dashed #007bff;
         border-radius: 10px;
         padding: 30px;
         text-align: center;
-        color: #007bff;
-        background-color: #f8f9fa;
-        transition: background-color 0.3s, border-color 0.3s;
+        cursor: pointer;
+        background-color: #f0f8ff;
     }
 
     .dropzone.dragover {
-        background-color: #e9f7ff;
+        background-color: #e0f2ff;
         border-color: #0056b3;
     }
 
-    .dropzone img {
+    .preview {
+        margin-top: 20px;
+        display: none;
+    }
+
+    .preview img {
         max-width: 100%;
-        height: auto;
-        margin-top: 15px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 </style>
 
@@ -90,26 +95,22 @@
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-8 col-sm-12">
-                            <label for="image" class="form-label">Pilih Gambar</label>
-                            <input type="file" class="form-control <?= isset(session()->getFlashdata('errors')['image']) ? 'is-invalid' : '' ?>" id="image" name="image" accept="image/*" value="<?= old('image'); ?>">
+                        <div class="col-lg-12 col-md-8 col-sm-12">
+                            <label for="stock">Upload Gambar</label>
+                            <input type="file" id="fileInput" name="image" hidden>
+                            <div class="dropzone <?= isset(session()->getFlashdata('errors')['image']) ? 'is-invalid' : '' ?>" id="dropzone" value="<?= old('image'); ?>">
+                                <img src="<?php echo base_url('icon/image.png'); ?>" alt="Preview Gambar" width="50px">
+                                <p>Seret & Lepaskan Gambar di sini atau <strong>Klik untuk memilih</strong></p>
+                                <div class="preview" id="preview">
+                                    <img id="preview-img" src="#" alt="Preview Image" width="80px">
+                                </div>
+                            </div>
                             <?php if (isset(session()->getFlashdata('errors')['image'])): ?>
                                 <div class="invalid-feedback">
                                     <?= session()->getFlashdata('errors')['image']; ?>
                                 </div>
                             <?php endif; ?>
                         </div>
-                        <!-- <div class="col-lg-12 col-md-8 col-sm-12">
-                            <div class="form-group">
-                                <label for="stock">Upload Image</label>
-                                <div id="dropzone" class="dropzone">
-                                    <img src="<?php echo base_url('icon/image.png'); ?>" alt="Preview Gambar">
-                                    <p>Upload gambar disini</p>
-                                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
-                                    <img id="preview" src="" alt="Preview Gambar" class="d-none">
-                                </div>
-                            </div>
-                        </div> -->
                     </div>
                     <div class="d-flex justify-content-end">
                         <a href="<?php echo base_url() . '/produk'; ?>" class="btn btn-outline-primary px-5 m-sm-2">Batalkan</a>
@@ -121,53 +122,52 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const dropzone = document.getElementById("dropzone");
     const fileInput = document.getElementById("fileInput");
-    const preview = document.getElementById("preview");
+    const previewContainer = document.getElementById("preview");
+    const previewImage = document.getElementById("preview-img");
 
-    // Klik pada dropzone untuk membuka file picker
+    // Klik untuk memilih file
     dropzone.addEventListener("click", () => fileInput.click());
 
-    // Dragover event (saat file di-drag ke area dropzone)
+    // Seret & lepas file
     dropzone.addEventListener("dragover", (e) => {
         e.preventDefault();
         dropzone.classList.add("dragover");
     });
 
-    // Dragleave event (saat file keluar dari area dropzone)
-    dropzone.addEventListener("dragleave", () => {
-        dropzone.classList.remove("dragover");
-    });
+    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
 
-    // Drop event (saat file dijatuhkan ke dropzone)
     dropzone.addEventListener("drop", (e) => {
         e.preventDefault();
         dropzone.classList.remove("dragover");
+
         const file = e.dataTransfer.files[0];
-        handleFile(file);
-    });
-
-    // Saat file diunggah melalui file picker
-    fileInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        handleFile(file);
-    });
-
-    // Fungsi untuk menampilkan preview gambar
-    function handleFile(file) {
-        if (file && file.type.startsWith("image/")) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                preview.src = e.target.result;
-                preview.classList.remove("d-none");
-            };
-            reader.readAsDataURL(file);
-        } else {
-            alert("Mohon unggah file gambar!");
+        if (file) {
+            fileInput.files = e.dataTransfer.files; // Simpan file ke input
+            previewFile(file);
         }
+    });
+
+    // Preview gambar
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        if (file) {
+            previewFile(file);
+        }
+    });
+
+    function previewFile(file) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            previewImage.src = reader.result;
+            previewContainer.style.display = "block";
+        };
+        reader.readAsDataURL(file);
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <?= $this->endSection() ?>

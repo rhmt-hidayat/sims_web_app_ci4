@@ -222,16 +222,21 @@ class Produk extends BaseController
                     'integer' => 'Stock barang harus berupa angka',
                 ],
             ],
-            'image' => [
-                'rules'  => 'uploaded[image]|is_image[image]|max_size[image,100]|mime_in[image,image/jpg,image/jpeg,image/png]',
-                'errors' => [
-                    'uploaded' => 'File harus diunggah.',
-                    'is_image' => 'Yang diunggah harus berupa gambar.',
-                    'max_size' => 'Ukuran gambar maksimal 100kb.',
-                    'mime_in'  => 'Format file harus JPG, JPEG, atau PNG.',
-                ],
-            ],
         ]);
+
+        if ($this->request->getFile('image')->isValid()) {
+            $validation->setRules([
+                'image' => [
+                    'rules'  => 'uploaded[image]|is_image[image]|max_size[image,100]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                    'errors' => [
+                        'uploaded' => 'File harus diunggah.',
+                        'is_image' => 'Yang diunggah harus berupa gambar.',
+                        'max_size' => 'Ukuran gambar maksimal 100kb.',
+                        'mime_in'  => 'Format file harus JPG, JPEG, atau PNG.',
+                    ],
+                ],
+            ]);
+        }
 
         if (!$validation->withRequest($this->request)->run()) {
             return redirect()->to('/produk/edit/' . $this->request->getVar('slug'))->withInput()->with('errors', $validation->getErrors());
@@ -241,7 +246,7 @@ class Produk extends BaseController
 
         if ($file && $file->isValid() && !$file->hasMoved()) {
             // Hapus gambar lama jika ada
-            if ($produkLama['image']) {
+            if (!empty($produkLama['image']) && file_exists(FCPATH . 'uploads/' . $produkLama['image'])) {
                 unlink(FCPATH . 'uploads/' . $produkLama['image']);
             }
             // Simpan gambar baru
