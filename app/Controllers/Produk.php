@@ -155,53 +155,113 @@ class Produk extends BaseController
         }
     }
 
-    public function edit($id)
+    public function edit($slug)
     {
-        $produkModel = new ProductModel();
-        $kategoriModel = new KategoriModel();
-        $produk = $produkModel->where('id', $id)->first();
-
+        $produk = $this->productModel->where('slug', $slug)->first();
         if (!$produk) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Produk tidak ditemukan.');
         }
-        $kategori = $kategoriModel->findAll();
-        $selectedKategori = $kategoriModel->where('nama_kategori', $produk['kategori'])->first();
+        $kategori = $this->kategoriModel->findAll();
+        $selectedKategori = $this->kategoriModel->where('nama_kategori', $produk['kategori'])->first();
         $data = [
             'title' => 'Edit Produk',
-            'produk' => $produk,
+            'produk' => $this->productModel->getProduk($slug),
             'kategori' => $kategori,
             'selectedKategori' => $selectedKategori['nama_kategori'] ?? null,
         ];
 
-        // lakukan validasi
-        $validation =  \Config\Services::validation();
-        $validation->setRules([
-            'id' => 'required',
-            'nama_barang' => 'required',
-            'kategori' => 'required',
-            'harga_beli' => 'required|numeric',
-            'harga_jual' => 'required|numeric',
-            'stock_barang' => 'required|integer',
-            'image' => 'permit_empty|string',
-        ]);
+        return view('pages/produk/edit', $data);
+    }
 
-        $isDataValid = $validation->withRequest($this->request)->run();
-        // jika data vlid, maka simpan ke database
-        if ($isDataValid) {
-            $produkModel->update($id, [
-                "nama_barang" => $this->request->getPost('nama_barang'),
-                "kategori" => $this->request->getPost('kategori'),
-                "harga_beli" => $this->request->getPost('harga_beli'),
-                "harga_jual" => $this->request->getPost('harga_jual'),
-                "stock_barang" => $this->request->getPost('stock_barang'),
-                "image" => $this->request->getPost('image'),
-                "last_date" => date('Y-m-d H:i:s'),
-            ]);
-            session()->setFlashdata('success', 'Produk berhasil diperbarui.');
-            return redirect()->to('produk')->with('success', 'Produk berhasil diperbarui.');
+    public function update($id)
+    {
+        //cek nama barang
+        $produkLama = $this->productModel->getProduk($this->request->getPost('slug'));
+        if ($this->request->getPost('nama_barang') == $produkLama['nama_barang']) {
+            $rule_nama_barang = 'required';
+        } else {
+            $rule_nama_barang = 'required|is_unique[produk.nama_barang]';
         }
 
-        return view('pages/produk/edit', $data);
+        $validation =  \Config\Services::validation();
+        $validation->setRules([
+            'kategori' => [
+                'rules' => 'required',
+                'errors' => [
+                    'required' => 'Kategori harus diisi',
+                ],
+            ],
+            'nama_barang' => [
+                'rules' => $rule_nama_barang,
+                'errors' => [
+                    'required' => 'Nama barang produk harus diisi',
+                    'is_unique' => 'Nama barang produk sudah ada'
+                ],
+            ],
+            'harga_beli' => [
+                'rules' => 'required|numeric',
+                'errors' => [
+                    'required' => 'Harga beli harus diisi',
+                    'numeric' => 'Harga beli harus berupa angka',
+                ],
+            ],
+            'harga_jual' => [
+                'rules' => 'required|numeric|min_harga_jual[harga_beli]',
+                'errors' => [
+                    'required' => 'Harga jual harus diisi',
+                    'numeric' => 'Harga jual harus berupa angka',
+                    'min_harga_jual' => 'Harga jual harus setidaknya 30% lebih tinggi dari harga beli.',
+                ],
+            ],
+            'stock_barang' => [
+                'rules' => 'required|integer',
+                'errors' => [
+                    'required' => 'Stock barang harus diisi',
+                    'integer' => 'Stock barang harus berupa angka',
+                ],
+            ],
+            'image' => [
+                'rules'  => 'uploaded[image]|is_image[image]|max_size[image,100]|mime_in[image,image/jpg,image/jpeg,image/png]',
+                'errors' => [
+                    'uploaded' => 'File harus diunggah.',
+                    'is_image' => 'Yang diunggah harus berupa gambar.',
+                    'max_size' => 'Ukuran gambar maksimal 100kb.',
+                    'mime_in'  => 'Format file harus JPG, JPEG, atau PNG.',
+                ],
+            ],
+        ]);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->to('/produk/edit/' . $this->request->getVar('slug'))->withInput()->with('errors', $validation->getErrors());
+        }
+
+        $file = $this->request->getFile('image');
+
+        if ($file && $file->isValid() && !$file->hasMoved()) {
+            // Hapus gambar lama jika ada
+            if ($produkLama['image']) {
+                unlink(FCPATH . 'uploads/' . $produkLama['image']);
+            }
+            // Simpan gambar baru
+            $newName = $file->getName();
+            $file->move('uploads/', $newName);
+        } else {
+            $newName = $produkLama['image']; // Gunakan gambar lama jika tidak ada file baru
+        }
+
+        $slug = url_title($this->request->getPost('nama_barang'), '-', true);
+        $this->productModel->update($id, [
+            "nama_barang" => $this->request->getPost('nama_barang'),
+            "slug" => $slug,
+            "kategori" => $this->request->getPost('kategori'),
+            "harga_beli" => $this->request->getPost('harga_beli'),
+            "harga_jual" => $this->request->getPost('harga_jual'),
+            "stock_barang" => $this->request->getPost('stock_barang'),
+            "image" => $newName,
+        ]);
+
+        session()->setFlashdata('success', 'Produk berhasil diperbarui.');
+        return redirect()->to('produk')->with('success', 'Produk berhasil diperbarui.');
     }
 
     public function delete($id)

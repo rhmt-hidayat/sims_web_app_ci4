@@ -22,8 +22,9 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->add('/produk/add', 'Produk::create');
     $routes->post('/produk/insert', 'Produk::insert');
     $routes->get('/produk/detail/(:segment)', 'Produk::detail/$1');
-    $routes->add('/produk/(:segment)/edit', 'Produk::edit/$1');
-    $routes->get('/produk/(:segment)/delete', 'Produk::delete/$1');
+    $routes->add('/produk/edit/(:segment)', 'Produk::edit/$1');
+    $routes->post('produk/update/(:num)', 'Produk::update/$1');
+    $routes->get('/produk/delete/(:segment)', 'Produk::delete/$1');
     $routes->get('/produk/export', 'Produk::export');
     // $routes->get('/produk/export/(:any)', 'Produk::export/$1'); //filter by kategori
     $routes->get('/produk/print/(:segment)', 'Produk::cetak_invoice/$1');

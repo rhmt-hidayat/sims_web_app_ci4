@@ -82,8 +82,8 @@
                             <td><?= $rows['stock_barang'] ?></td>
                             <td>
                                 <a href="/produk/detail/<?= $rows['slug'] ?>"><i class="fas fa-eye"></i></a>
-                                <a href="<?= base_url('produk/' . $rows['id'] . '/edit') ?>"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
-                                <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" data-href="<?= base_url('produk/' . $rows['id'] . '/delete') ?>" onclick="confirmToDelete(this)" class="img-fluid" alt="logo"></a>
+                                <a href="<?= base_url('produk/edit/' . $rows['slug'] . '') ?>"><img src="<?php echo base_url('icon/edit.png'); ?>" class="img-fluid" alt="logo"></a>
+                                <a href="#"><img src="<?php echo base_url('icon/delete.png'); ?>" data-href="<?= base_url('produk/delete/' . $rows['id'] . '') ?>" onclick="confirmToDelete(this)" class="img-fluid" alt="logo"></a>
                             </td>
                         </tr>
                     <?php endforeach ?>
