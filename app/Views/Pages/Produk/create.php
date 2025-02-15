@@ -50,9 +50,16 @@
                                 <label for="kategori" class="form-label">Kategori</label>
                                 <select id="kategori" name="kategori" class="form-select <?= isset(session()->getFlashdata('errors')['kategori']) ? 'is-invalid' : '' ?>" value="<?= old('kategori'); ?>">
                                     <option value="">Pilih Kategori</option>
-                                    <?php foreach ($kategori as $item): ?>
-                                        <option value="<?= $item['nama_kategori']; ?>"><?= $item['nama_kategori']; ?></option>
-                                    <?php endforeach; ?>
+                                    <!-- PREPARED STATEMENT -->
+                                    <?php
+                                        $db = \Config\Database::connect();
+                                        $query = $db->table('kategori')
+                                            ->get();
+                                        $result = $query->getResult();
+                                        foreach ($result as $row) {
+                                            echo '<option value="' . $row->nama_kategori . '">' . $row->nama_kategori . '</option>';
+                                        }
+                                    ?>
                                 </select>
                                 <?php if (isset(session()->getFlashdata('errors')['kategori'])): ?>
                                     <div class="invalid-feedback"><?= session()->getFlashdata('errors')['kategori']; ?></div>

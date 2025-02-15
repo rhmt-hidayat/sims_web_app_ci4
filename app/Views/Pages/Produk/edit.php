@@ -52,12 +52,17 @@
                                 <label for="kategori" class="form-label">Kategori</label>
                                 <select id="kategori" name="kategori" class="form-select <?= isset(session()->getFlashdata('errors')['kategori']) ? 'is-invalid' : '' ?>" value="<?= (old('kategori')) ? old('kategori') : ($produk['kategori']) ?>">
                                     <option value="">Pilih Kategori</option>
-                                    <?php foreach ($kategori as $item): ?>
-                                        <option value="<?= $item['nama_kategori']; ?>"
-                                            <?= ($item['nama_kategori'] == $produk['kategori']) ? 'selected' : ''; ?>>
-                                            <?= $item['nama_kategori']; ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                    <!-- PREPARED STATEMENT -->
+                                    <?php
+                                        $db = \Config\Database::connect();
+                                        $query = $db->table('kategori')
+                                            ->get();
+                                        $result = $query->getResult();
+                                        foreach ($result as $row) {
+                                            $selected = ($row->nama_kategori == $produk['kategori']) ? 'selected' : '';
+                                            echo '<option value="' . $row->nama_kategori . '" ' . $selected . '>' . $row->nama_kategori . '</option>';
+                                        }
+                                    ?>
                                 </select>
                                 <?php if (isset(session()->getFlashdata('errors')['kategori'])): ?>
                                     <div class="invalid-feedback"><?= session()->getFlashdata('errors')['kategori']; ?></div>

@@ -72,7 +72,7 @@ class Produk extends BaseController
     {
         $data = [
             'title' => 'Tambah Produk',
-            'kategori' => $this->kategoriModel->findAll(),
+            // 'kategori' => $this->kategoriModel->findAll(), // NOT PREPARED STATEMENT
             'validation' => session()->getFlashdata('validation') ?? \Config\Services::validation(),
         ];
 
@@ -136,19 +136,35 @@ class Produk extends BaseController
         $file = $this->request->getFile('image');
         if ($file->isValid() && !$file->hasMoved()) {
             $newName = $file->getName();
-            $file->move('uploads/', $newName); //nama folder di public
-            // $file->move(WRITEPATH . 'uploads', $newName); //jika folder diluar public
+            $namaFile = str_replace(' ', '_', $newName); // Ganti spasi dengan underscore
+            $file->move('uploads/', $namaFile); //nama folder di public
+            // $file->move(WRITEPATH . 'uploads', $namaFile); //jika folder diluar public
 
             $slug = url_title($this->request->getPost('nama_barang'), '-', true);
-            $this->productModel->insert([
-                'nama_barang' => $this->request->getPost('nama_barang'),
-                'slug' => $slug,
-                'kategori' => $this->request->getPost('kategori'),
-                'harga_beli' => $this->request->getPost('harga_beli'),
-                'harga_jual' => $this->request->getPost('harga_jual'),
-                'stock_barang' => $this->request->getPost('stock_barang'),
-                'image' => $newName,
-            ]);
+            // NOT PREPARED STATEMENT
+            // $this->productModel->insert([
+            //     'nama_barang' => $this->request->getPost('nama_barang'),
+            //     'slug' => $slug,
+            //     'kategori' => $this->request->getPost('kategori'),
+            //     'harga_beli' => $this->request->getPost('harga_beli'),
+            //     'harga_jual' => $this->request->getPost('harga_jual'),
+            //     'stock_barang' => $this->request->getPost('stock_barang'),
+            //     'image' => $namaFile,
+            // ]);
+
+            // PREPARED STATEMENT
+            $data = [
+                'nama_barang'  => $this->request->getPost('nama_barang', FILTER_SANITIZE_STRING),
+                'slug'         => $slug,
+                'kategori'     => $this->request->getPost('kategori', FILTER_SANITIZE_STRING),
+                'harga_beli'   => (int) $this->request->getPost('harga_beli'),
+                'harga_jual'   => (int) $this->request->getPost('harga_jual'),
+                'stock_barang' => (int) $this->request->getPost('stock_barang'),
+                'image'        => $namaFile,
+            ];
+            $db = \Config\Database::connect();
+            $db->table('produk')->insert($data);
+            // $this->productModel->insert($data); //pakai ini bisa
 
             session()->setFlashdata('success', 'Produk berhasil ditambahkan');
             return redirect()->to('produk');
@@ -251,21 +267,38 @@ class Produk extends BaseController
             }
             // Simpan gambar baru
             $newName = $file->getName();
-            $file->move('uploads/', $newName);
+            $namaFile = str_replace(' ', '_', $newName); // Ganti spasi dengan underscore
+            $file->move('uploads/', $namaFile);
         } else {
-            $newName = $produkLama['image']; // Gunakan gambar lama jika tidak ada file baru
+            $namaFile = $produkLama['image']; // Gunakan gambar lama jika tidak ada file baru
         }
 
         $slug = url_title($this->request->getPost('nama_barang'), '-', true);
-        $this->productModel->update($id, [
-            "nama_barang" => $this->request->getPost('nama_barang'),
-            "slug" => $slug,
-            "kategori" => $this->request->getPost('kategori'),
-            "harga_beli" => $this->request->getPost('harga_beli'),
-            "harga_jual" => $this->request->getPost('harga_jual'),
-            "stock_barang" => $this->request->getPost('stock_barang'),
-            "image" => $newName,
-        ]);
+        // NOT PREPARED STATEMENT
+        // $this->productModel->update($id, [
+        //     "nama_barang" => $this->request->getPost('nama_barang'),
+        //     "slug" => $slug,
+        //     "kategori" => $this->request->getPost('kategori'),
+        //     "harga_beli" => $this->request->getPost('harga_beli'),
+        //     "harga_jual" => $this->request->getPost('harga_jual'),
+        //     "stock_barang" => $this->request->getPost('stock_barang'),
+        //     "image" => $namaFile,
+        // ]);
+
+        // PREPARED STATEMENT
+        $data = [
+            'nama_barang'  => $this->request->getPost('nama_barang', FILTER_SANITIZE_STRING),
+            'slug'         => $slug,
+            'kategori'     => $this->request->getPost('kategori', FILTER_SANITIZE_STRING),
+            'harga_beli'   => (int) $this->request->getPost('harga_beli'),
+            'harga_jual'   => (int) $this->request->getPost('harga_jual'),
+            'stock_barang' => (int) $this->request->getPost('stock_barang'),
+            'image'        => $namaFile,
+        ];
+
+        $db = \Config\Database::connect();
+        $db->table('produk')->where('id', $id)->update($data);
+        // $this->productModel->update($id, $data); //pakai ini bisa
 
         session()->setFlashdata('success', 'Produk berhasil diperbarui.');
         return redirect()->to('produk')->with('success', 'Produk berhasil diperbarui.');
@@ -373,7 +406,7 @@ class Produk extends BaseController
         // foreach ($products as &$product) {
         //     $product['image'] = base_url('public/uploads/' . $product['image']);
         // }
-        $html = view('pages/produk/report_pdf', ['title' => 'Daftar Produk','products' => $products]);
+        $html = view('pages/produk/report_pdf', ['title' => 'Daftar Produk', 'products' => $products]);
 
         // Konfigurasi Dompdf
         $options = new Options();
