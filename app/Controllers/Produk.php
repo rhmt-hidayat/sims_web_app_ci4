@@ -141,7 +141,7 @@ class Produk extends BaseController
             // $file->move(WRITEPATH . 'uploads', $namaFile); //jika folder diluar public
 
             $slug = url_title($this->request->getPost('nama_barang'), '-', true);
-            // NOT PREPARED STATEMENT
+            // PREPARED STATEMENT MODEL (disarankan)
             // $this->productModel->insert([
             //     'nama_barang' => $this->request->getPost('nama_barang'),
             //     'slug' => $slug,
@@ -152,7 +152,9 @@ class Produk extends BaseController
             //     'image' => $namaFile,
             // ]);
 
-            // PREPARED STATEMENT
+            date_default_timezone_set('Asia/Jakarta');
+
+            // PREPARED STATEMENT CARA LAIN
             $data = [
                 'nama_barang'  => $this->request->getPost('nama_barang', FILTER_SANITIZE_STRING),
                 'slug'         => $slug,
@@ -161,10 +163,28 @@ class Produk extends BaseController
                 'harga_jual'   => (int) $this->request->getPost('harga_jual'),
                 'stock_barang' => (int) $this->request->getPost('stock_barang'),
                 'image'        => $namaFile,
+                'created_at'   => date('Y-m-d H:i:s'),
             ];
+            //CARA 1 langsung memanggil bawaan ci4 (aman)
             $db = \Config\Database::connect();
             $db->table('produk')->insert($data);
-            // $this->productModel->insert($data); //pakai ini bisa
+
+            //CARA 2 memanggil add ProdukModel (parameter binding query -> aman)
+            // $this->productModel->add($data);
+
+            //CARA 3 Query manual (cukup aman)
+            // $nama_barang = $this->request->getPost('nama_barang', FILTER_SANITIZE_STRING);
+            // $slug = $slug;
+            // $kategori = $this->request->getPost('kategori', FILTER_SANITIZE_STRING);
+            // $harga_beli = (int) $this->request->getPost('harga_beli');
+            // $harga_jual = (int) $this->request->getPost('harga_jual');
+            // $stock_barang = (int) $this->request->getPost('stock_barang');
+            // $image = $namaFile;
+            // $created_at = date('Y-m-d H:i:s');
+
+            // $sql = "INSERT INTO produk (nama_barang, slug, kategori, harga_beli, harga_jual, stock_barang, image, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            // $db = \Config\Database::connect();
+            // $db->query($sql, [$nama_barang, $slug, $kategori, $harga_beli, $harga_jual, $stock_barang, $image, $created_at]);
 
             session()->setFlashdata('success', 'Produk berhasil ditambahkan');
             return redirect()->to('produk');
@@ -274,7 +294,7 @@ class Produk extends BaseController
         }
 
         $slug = url_title($this->request->getPost('nama_barang'), '-', true);
-        // NOT PREPARED STATEMENT
+        // PREPARED STATEMENT MODEL (disarankan)
         // $this->productModel->update($id, [
         //     "nama_barang" => $this->request->getPost('nama_barang'),
         //     "slug" => $slug,
@@ -285,7 +305,9 @@ class Produk extends BaseController
         //     "image" => $namaFile,
         // ]);
 
-        // PREPARED STATEMENT
+        date_default_timezone_set('Asia/Jakarta');
+
+        // PREPARED STATEMENT CARA LAIN
         $data = [
             'nama_barang'  => $this->request->getPost('nama_barang', FILTER_SANITIZE_STRING),
             'slug'         => $slug,
@@ -294,11 +316,29 @@ class Produk extends BaseController
             'harga_jual'   => (int) $this->request->getPost('harga_jual'),
             'stock_barang' => (int) $this->request->getPost('stock_barang'),
             'image'        => $namaFile,
+            'updated_at'   => date('Y-m-d H:i:s'),
         ];
 
+        //CARA 1 langsung memanggil bawaan ci4 (aman)
+        // $db = \Config\Database::connect();
+        // $db->table('produk')->where('id', $id)->update($data);
+
+        //CARA 2 memanggil edit ProdukModel (parameter binding query -> aman)
+        // $this->productModel->edit($id, $data);
+
+        //CARA 3 Query manual (cukup aman)
+        $nama_barang = $this->request->getPost('nama_barang', FILTER_SANITIZE_STRING);
+        $slug = $slug;
+        $kategori = $this->request->getPost('kategori', FILTER_SANITIZE_STRING);
+        $harga_beli = (int) $this->request->getPost('harga_beli');
+        $harga_jual = (int) $this->request->getPost('harga_jual');
+        $stock_barang = (int) $this->request->getPost('stock_barang');
+        $image = $namaFile;
+        $updated_at = date('Y-m-d H:i:s');
+
+        $query = "UPDATE produk SET nama_barang = ?, slug = ?, kategori = ?, harga_beli = ?, harga_jual = ?, stock_barang = ?, image = ?, updated_at = ? WHERE id = ?";
         $db = \Config\Database::connect();
-        $db->table('produk')->where('id', $id)->update($data);
-        // $this->productModel->update($id, $data); //pakai ini bisa
+        $db->query($query, [$nama_barang, $slug, $kategori, $harga_beli, $harga_jual, $stock_barang, $image, $updated_at, $id]);
 
         session()->setFlashdata('success', 'Produk berhasil diperbarui.');
         return redirect()->to('produk')->with('success', 'Produk berhasil diperbarui.');
@@ -307,6 +347,7 @@ class Produk extends BaseController
     public function delete($id)
     {
         $this->productModel->delete($id);
+        // $this->productModel->hapus($id); //parameter binding query
         session()->setFlashdata('error', 'Produk berhasil dihapus.');
         return redirect()->to('produk');
     }
@@ -332,8 +373,10 @@ class Produk extends BaseController
     {
         // Ambil kategori dari query string (?kategori=Alat+Olahraga)
         $kategori = $this->request->getGet('kategori');
+        // dd($kategori); //VALUE NULL
         if ($kategori) {
-            $produk = $this->productModel->where('kategori', $kategori)->findAll();
+            // $produk = $this->productModel->where('kategori', $kategori)->findAll();
+            $produk = $this->productModel->getProdukByKategori($kategori);
         } else {
             $produk = $this->productModel->findAll();
         }
