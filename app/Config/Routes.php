@@ -18,6 +18,10 @@ $routes->get('/reset-password/(:any)', 'User::resetPassword/$1');
 $routes->post('/reset-password', 'User::processResetPassword');
 $routes->get('/logout', 'User::logout');
 
+//API GET ALL
+// $routes->get('profil', 'Api\Profil::index', ['filter' => 'auth_token']);
+// $routes->get('produk', 'Api\Profil::produk', ['filter' => 'auth_token']);
+
 $routes->group('', ['filter' => 'auth'], function ($routes) {
     $routes->get('/profil', 'User::profil');
     $routes->get('/produk', 'Produk::index');
