@@ -8,8 +8,10 @@ use CodeIgniter\Router\RouteCollection;
 
 $routes->get('/', 'User::index');
 $routes->post('/auth', 'User::auth');
+$routes->post('login', 'Api\Auth::login'); //api login
 $routes->get('/register', 'User::register');
 $routes->post('/authRegister', 'User::proses_register');
+$routes->post('register', 'Api\Auth::register'); //api register
 $routes->get('/forgot-password', 'User::forgotPassword');
 $routes->post('/forgot-password', 'User::processForgotPassword');
 $routes->get('/reset-password/(:any)', 'User::resetPassword/$1');
