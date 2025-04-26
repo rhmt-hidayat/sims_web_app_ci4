@@ -38,20 +38,25 @@
                     </div>
                 </form>
 
-                <form id="filterForm" method="get" action="<?= base_url('/produk'); ?>" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                    <select id="kategori" name="kategori" onchange="submitForm()" class="form-select">
-                        <option value="">
-                            <img src="<?= base_url('icon/Package.png'); ?>" class="img-fluid" alt="logo">
-                            Semua
-                        </option>
-                        <option value="Alat Olahraga">Alat Olahraga</option>
-                        <option value="Alat Music">Alat Music</option>
-                    </select>
+                <form id="filterForm" method="get" action="<?= base_url('/produk'); ?>" class="d-none d-sm-inline-block form-inline mr-auto ml-md-3">
+                    <div class="form-group">    
+                        <select id="kategori" name="kategori" onchange="submitForm()" class="form-control">
+                            <option value="">
+                                <img src="<?= base_url('icon/Package.png'); ?>" class="img-fluid" alt="logo">
+                                ---Pilih Kategori---
+                            </option>
+                            <option value="Semua">Semua</option>
+                            <option value="Alat Olahraga">Alat Olahraga</option>
+                            <option value="Alat Music">Alat Music</option>
+                        </select>
+                    </div>
                 </form>
             </div>
             <div class="col-lg-6 mb-4 text-right">
                 <a href="<?= base_url('produk/pdf'); ?>" class="btn btn-sm btn-secondary" target="_blank"><i class="fas fa-download"></i> PDF</a>
-                <a href="<?php echo base_url() . 'produk/export'; ?>" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><img src="<?php echo base_url('icon/MicrosoftExcelLogo.png'); ?>" class="img-fluid" alt="logo"> Export Excel</a>
+                <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" data-toggle="modal" data-target="#exportModal">
+                    <img src="<?php echo base_url('icon/MicrosoftExcelLogo.png'); ?>" class="img-fluid" alt="logo"> Export Excel
+                </a>
                 <a href="<?php echo base_url() . 'produk/add'; ?>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><img src="<?php echo base_url('icon/PlusCircle.png'); ?>" class="img-fluid" alt="logo"> Tambah Produk</a>
             </div>
         </div>
@@ -93,6 +98,36 @@
             <?= $pager->links('produk', 'produk_pager') ?>
         </div>
     </div>
+</div>
+
+<!-- Modal Export -->
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exportModalLabel">Data Export</h5>
+        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <form action="<?php echo base_url() . 'produk/export'; ?>" method="get">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="kategori">Pilih Kategori</label>
+            <select name="kategori" id="kategori" class="form-control" required>
+              <option value="Semua">Semua Kategori</option>
+              <option value="Alat Olahraga">Alat Olahraga</option>
+              <option value="Alat Music">Alat Music</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-success">Export</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <div id="confirm-dialog" class="modal" tabindex="-1" role="dialog">

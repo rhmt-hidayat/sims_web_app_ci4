@@ -37,8 +37,8 @@ class Produk extends BaseController
         }
         // Ambil kategori dari dropdown filter
         $kategoriId = $this->request->getGet('kategori');
-        if ($kategoriId) {
-            $produk = $produk->where('kategori', $kategoriId);
+        if ($kategoriId && $kategoriId != 'Semua') {
+            $produk = $this->productModel->where('kategori', $kategoriId);
         }
 
         $data = [
@@ -373,10 +373,9 @@ class Produk extends BaseController
     {
         // Ambil kategori dari query string (?kategori=Alat+Olahraga)
         $kategori = $this->request->getGet('kategori');
-        // dd($kategori); //VALUE NULL
-        if ($kategori) {
-            // $produk = $this->productModel->where('kategori', $kategori)->findAll();
-            $produk = $this->productModel->getProdukByKategori($kategori);
+        if ($kategori && $kategori != 'Semua') {
+            $produk = $this->productModel->where('kategori', $kategori)->findAll();
+            // $produk = $this->productModel->getProdukByKategori($kategori);
         } else {
             $produk = $this->productModel->findAll();
         }
